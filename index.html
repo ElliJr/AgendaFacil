@@ -10,17 +10,62 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background: #121212; color: white; font-family: 'Inter', sans-serif; }
-        .gold { background: linear-gradient(135deg, #D4AF37, #B8860B); }
-        .card { background: #1E1E1E; border: 1px solid #2D2D2D; }
-        .hidden { display: none !important; }
-        .tab-active { color: #fbbf24; border-bottom: 2px solid #fbbf24; }
-        input, select { background: #2D2D2D !important; color: white !important; border: 1px solid #444 !important; outline: none; }
-        input:focus { border-color: #D4AF37 !important; }
+        body {
+            background: #121212;
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gold {
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+        }
+
+        .card {
+            background: #1E1E1E;
+            border: 1px solid #2D2D2D;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .tab-active {
+            color: #fbbf24;
+            border-bottom: 2px solid #fbbf24;
+        }
+
+        input,
+        select {
+            background: #2D2D2D !important;
+            color: white !important;
+            border: 1px solid #444 !important;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #D4AF37 !important;
+        }
     </style>
 </head>
 
 <body>
+    <div id="bloqueio-pagamento"
+        class="hidden fixed inset-0 bg-black/90 z-[500] flex items-center justify-center p-6 backdrop-blur-md">
+        <div
+            class="card p-8 rounded-2xl w-full max-w-sm text-center border-2 border-yellow-400/50 shadow-[0_0_50px_rgba(212,175,55,0.2)]">
+            <div class="text-5xl mb-4">💳</div>
+            <h2 class="text-2xl font-bold text-white mb-2 italic">Assinatura Expirada</h2>
+            <p class="text-gray-400 text-sm mb-6">Para continuar gerenciando sua barbearia e recebendo agendamentos
+                online, ative sua licença PRO.</p>
+
+            <a href="https://wa.me/55SEUNUMERO" target="_blank"
+                class="gold block w-full p-4 rounded-xl text-black font-bold uppercase hover:scale-105 transition">Ativar
+                Agora</a>
+
+            <button id="logout-bloqueio" class="mt-4 text-xs text-gray-600 underline uppercase tracking-widest">Sair da
+                conta</button>
+        </div>
+    </div>
 
     <div id="loading" class="min-h-screen flex items-center justify-center fixed inset-0 bg-[#121212] z-[300]">
         <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-yellow-400"></div>
@@ -28,8 +73,10 @@
 
     <div id="login" class="hidden min-h-screen flex items-center justify-center p-6">
         <div class="card p-8 rounded-xl w-full max-w-md shadow-2xl border-t-4 border-yellow-400">
-            <h1 id="login-title" class="text-3xl font-bold text-center mb-2 italic">Sys <span class="text-yellow-400">Barber</span></h1>
-            <p id="login-subtitle" class="text-center text-gray-500 text-xs mb-8 uppercase tracking-widest">Gestão Profissional</p>
+            <h1 id="login-title" class="text-3xl font-bold text-center mb-2 italic">Sys <span
+                    class="text-yellow-400">Barber</span></h1>
+            <p id="login-subtitle" class="text-center text-gray-500 text-xs mb-8 uppercase tracking-widest">Gestão
+                Profissional</p>
 
             <div id="area-cadastro" class="hidden mb-3">
                 <input id="reg-nome-barbearia" placeholder="Nome da sua Barbearia" class="w-full p-3 rounded">
@@ -38,18 +85,23 @@
             <input id="email" placeholder="Email" class="w-full p-3 mb-3 rounded">
             <input id="senha" type="password" placeholder="Senha" class="w-full p-3 mb-4 rounded">
 
-            <button id="btn-principal" class="gold w-full p-3 rounded font-bold text-black uppercase hover:brightness-110 transition">Entrar</button>
-            <button id="btn-alternar" class="w-full mt-4 text-xs text-gray-500 hover:text-yellow-400 underline">Não tem conta? Criar agora</button>
+            <button id="btn-principal"
+                class="gold w-full p-3 rounded font-bold text-black uppercase hover:brightness-110 transition">Entrar</button>
+            <button id="btn-alternar" class="w-full mt-4 text-xs text-gray-500 hover:text-yellow-400 underline">Não tem
+                conta? Criar agora</button>
         </div>
     </div>
 
     <div id="dashboard" class="hidden">
-        <nav class="p-4 border-b border-gray-800 flex justify-between items-center sticky top-0 bg-[#121212]/90 backdrop-blur-md z-50">
+        <nav
+            class="p-4 border-b border-gray-800 flex justify-between items-center sticky top-0 bg-[#121212]/90 backdrop-blur-md z-50">
             <h1 class="font-bold italic brand-name">Sys <span class="text-yellow-400">Barber</span></h1>
-            <button id="logout" class="text-red-400 text-[10px] font-bold uppercase border border-red-400/20 px-3 py-1 rounded-full">Sair</button>
+            <button id="logout"
+                class="text-red-400 text-[10px] font-bold uppercase border border-red-400/20 px-3 py-1 rounded-full">Sair</button>
         </nav>
 
-        <div class="flex justify-around bg-[#1E1E1E] border-b border-gray-800 text-[10px] font-bold uppercase tracking-widest sticky top-[61px] z-40">
+        <div
+            class="flex justify-around bg-[#1E1E1E] border-b border-gray-800 text-[10px] font-bold uppercase tracking-widest sticky top-[61px] z-40">
             <button onclick="tab('home')" id="t-home" class="p-4 tab-btn tab-active">Início</button>
             <button onclick="tab('clientes')" id="t-clientes" class="p-4 tab-btn">Clientes</button>
             <button onclick="tab('servicos')" id="t-servicos" class="p-4 tab-btn">Serviços</button>
@@ -68,14 +120,16 @@
                         <h2 id="atendimentos" class="text-2xl font-bold text-white">0</h2>
                     </div>
                 </div>
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase mb-4 tracking-widest italic">Próximos Horários</h3>
+                <h3 class="text-[10px] font-bold text-gray-500 uppercase mb-4 tracking-widest italic">Próximos Horários
+                </h3>
                 <div id="agenda" class="space-y-3"></div>
             </div>
 
             <div id="view-clientes" class="view hidden">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="font-bold uppercase text-xs tracking-widest text-yellow-400">Meus Clientes</h2>
-                    <button onclick="openModal('modal-cliente')" class="bg-white/5 px-3 py-1 rounded text-[10px] font-bold">+ NOVO</button>
+                    <button onclick="openModal('modal-cliente')"
+                        class="bg-white/5 px-3 py-1 rounded text-[10px] font-bold">+ NOVO</button>
                 </div>
                 <div id="lista-clientes" class="grid grid-cols-1 gap-2"></div>
             </div>
@@ -83,13 +137,15 @@
             <div id="view-servicos" class="view hidden">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="font-bold uppercase text-xs tracking-widest text-yellow-400">Tabela de Preços</h2>
-                    <button onclick="openModal('modal-servico')" class="bg-white/5 px-3 py-1 rounded text-[10px] font-bold">+ NOVO</button>
+                    <button onclick="openModal('modal-servico')"
+                        class="bg-white/5 px-3 py-1 rounded text-[10px] font-bold">+ NOVO</button>
                 </div>
                 <div id="lista-servicos" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
 
             <div id="view-config" class="view hidden">
-                <h2 class="font-bold uppercase text-xs tracking-widest text-yellow-400 mb-6 text-center">Configurações</h2>
+                <h2 class="font-bold uppercase text-xs tracking-widest text-yellow-400 mb-6 text-center">Configurações
+                </h2>
                 <div class="card p-6 rounded-2xl space-y-6">
                     <div class="text-center">
                         <p class="text-[10px] text-gray-600 uppercase mb-2">Sua Barbearia</p>
@@ -108,14 +164,17 @@
             </div>
         </main>
 
-        <button id="abrirModal" class="fixed bottom-8 right-6 w-16 h-16 gold rounded-full text-black text-3xl shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-40">
+        <button id="abrirModal"
+            class="fixed bottom-8 right-6 w-16 h-16 gold rounded-full text-black text-3xl shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-40">
             <span class="mb-1">+</span>
         </button>
     </div>
 
-    <div id="modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
+    <div id="modal"
+        class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
         <div class="card p-6 rounded-2xl w-full max-w-md shadow-2xl border border-yellow-400/20">
-            <h2 class="font-bold mb-6 text-yellow-400 uppercase text-xs tracking-widest text-center">Novo Agendamento</h2>
+            <h2 class="font-bold mb-6 text-yellow-400 uppercase text-xs tracking-widest text-center">Novo Agendamento
+            </h2>
             <div class="space-y-3">
                 <label class="text-[10px] text-gray-500 uppercase font-bold">Cliente</label>
                 <select id="input-cliente" class="w-full p-3 rounded"></select>
@@ -132,8 +191,10 @@
                 <label class="text-[10px] text-gray-500 uppercase font-bold">Serviço</label>
                 <select id="input-servico" class="w-full p-3 rounded"></select>
                 <div class="flex gap-3 pt-6">
-                    <button onclick="modal(false)" class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Cancelar</button>
-                    <button id="salvar" class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Confirmar</button>
+                    <button onclick="modal(false)"
+                        class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Cancelar</button>
+                    <button id="salvar"
+                        class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -145,8 +206,10 @@
             <input id="c-nome" placeholder="Nome Completo" class="w-full p-3 mb-3 rounded">
             <input id="c-fone" placeholder="WhatsApp (DDD + Número)" class="w-full p-3 mb-6 rounded">
             <div class="flex gap-3">
-                <button onclick="closeModal('modal-cliente')" class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Voltar</button>
-                <button id="btn-save-cliente" class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Cadastrar</button>
+                <button onclick="closeModal('modal-cliente')"
+                    class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Voltar</button>
+                <button id="btn-save-cliente"
+                    class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Cadastrar</button>
             </div>
         </div>
     </div>
@@ -157,8 +220,10 @@
             <input id="s-nome" placeholder="Ex: Corte Degradê" class="w-full p-3 mb-3 rounded">
             <input id="s-preco" type="number" placeholder="Preço" class="w-full p-3 mb-6 rounded">
             <div class="flex gap-3">
-                <button onclick="closeModal('modal-servico')" class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Voltar</button>
-                <button id="btn-save-servico" class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Salvar</button>
+                <button onclick="closeModal('modal-servico')"
+                    class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Voltar</button>
+                <button id="btn-save-servico"
+                    class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Salvar</button>
             </div>
         </div>
     </div>
@@ -166,7 +231,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, serverTimestamp, where, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, serverTimestamp, where, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAa4sZN42xSCw1nggj5wi-_AsuzGMfBEYg",
@@ -202,15 +267,26 @@
             const senha = document.getElementById("senha").value;
             const nomeBarber = document.getElementById("reg-nome-barbearia").value;
 
+            if (!email || !senha) return alert("Preencha email e senha!");
+
             try {
                 if (modoCadastro) {
-                    if(!nomeBarber) return alert("Digite o nome da sua barbearia!");
+                    if (!nomeBarber) return alert("Digite o nome da sua barbearia!");
                     const res = await createUserWithEmailAndPassword(auth, email, senha);
-                    // Salva o perfil com ID do usuário
+
+                    // Lógica de Expiração (3 dias grátis)
+                    const hoje = new Date();
+                    const expiracao = new Date();
+                    expiracao.setDate(hoje.getDate() + 3);
+
                     await setDoc(doc(db, "perfis", res.user.uid), {
                         nomeBarbearia: nomeBarber,
-                        email: email
+                        email: email,
+                        statusPagamento: "ativo",
+                        expiraEm: expiracao,
+                        criadoEm: hoje
                     });
+                    alert("Barbearia criada com 3 dias de teste!");
                 } else {
                     await signInWithEmailAndPassword(auth, email, senha);
                 }
@@ -219,29 +295,55 @@
 
         // --- MONITOR DE AUTENTICAÇÃO ---
         onAuthStateChanged(auth, async (user) => {
-            document.getElementById("loading").classList.add("hidden");
             if (user) {
-                document.getElementById("login").classList.add("hidden");
-                document.getElementById("dashboard").classList.remove("hidden");
-                document.getElementById('user-email-display').innerText = user.email;
-                
-                // Busca nome da barbearia
-                onSnapshot(doc(db, "perfis", user.uid), d => {
-                    if(d.exists()) {
-                        const nome = d.data().nomeBarbearia;
-                        document.querySelectorAll(".brand-name").forEach(el => el.innerHTML = `${nome} <span class="text-yellow-400 text-xs ml-1">PRO</span>`);
-                        document.getElementById("display-nome-barber").innerText = nome;
+                onSnapshot(doc(db, "perfis", user.uid), (snap) => {
+                    document.getElementById("loading").classList.add("hidden"); // Movemos para cá
+                    if (snap.exists()) {
+                        const data = snap.data();
+                        const agora = new Date();
+                        const expiraEm = data.expiraEm ? data.expiraEm.toDate() : null;
+
+                        document.querySelectorAll(".brand-name").forEach(el => el.innerHTML = `${data.nomeBarbearia} <span class="text-yellow-400 text-[10px] ml-1 uppercase font-bold">Pro</span>`);
+                        document.getElementById("display-nome-barber").innerText = data.nomeBarbearia;
+                        document.getElementById("user-email-display").innerText = user.email;
+
+                        if (expiraEm) {
+                            const dataFormatada = expiraEm.toLocaleDateString('pt-BR');
+                            const configArea = document.getElementById("view-config").querySelector(".card");
+                            const oldVenc = document.getElementById("vencimento-info");
+                            if (oldVenc) oldVenc.remove();
+                            const divVenc = document.createElement("div");
+                            divVenc.id = "vencimento-info";
+                            divVenc.className = "text-center p-2 bg-white/5 rounded-lg border border-white/10";
+                            divVenc.innerHTML = `<p class="text-[10px] text-gray-500 uppercase">Sua assinatura vence em:</p><p class="text-sm font-bold text-yellow-400">${dataFormatada}</p>`;
+                            configArea.prepend(divVenc);
+
+                            if (agora > expiraEm) {
+                                document.getElementById("bloqueio-pagamento").classList.remove("hidden");
+                                document.getElementById("dashboard").classList.add("hidden");
+                                return; // Para aqui se estiver bloqueado
+                            }
+                        }
+
+                        document.getElementById("bloqueio-pagamento").classList.add("hidden");
+                        document.getElementById("dashboard").classList.remove("hidden");
+                        document.getElementById("login").classList.add("hidden");
+                    } else {
+                        // Se o usuário logou mas não tem perfil (conta antiga ou erro no cadastro)
+                        alert("Perfil não encontrado. Por favor, crie uma conta nova.");
+                        signOut(auth);
                     }
                 });
-
                 carregarTudo();
             } else {
+                document.getElementById("loading").classList.add("hidden");
                 document.getElementById("dashboard").classList.add("hidden");
                 document.getElementById("login").classList.remove("hidden");
+                document.getElementById("bloqueio-pagamento").classList.add("hidden");
             }
         });
-
-        // --- CARREGAMENTO REALTIME ---
+        
+        // --- CARREGAMENTO REALTIME DOS DADOS ---
         function carregarTudo() {
             const uid = auth.currentUser.uid;
 
@@ -250,18 +352,18 @@
                 snap.forEach(d => {
                     const item = d.data();
                     const isPago = item.status === "concluido";
-                    if(isPago) pago += item.preco; else pendente += item.preco;
+                    if (isPago) pago += item.preco; else pendente += item.preco;
                     html += `
-                    <div class="card p-4 rounded-xl flex justify-between items-center ${isPago ? 'opacity-40 border-l-4 border-green-500' : 'border-l-4 border-yellow-400'}">
-                        <div onclick="window.lembrete('${item.fone}', '${item.cliente}', '${item.hora}')" class="cursor-pointer">
-                            <p class="font-bold text-sm ${isPago ? 'line-through text-gray-500' : 'text-yellow-400'}">${item.hora} - ${item.cliente}</p>
-                            <p class="text-[9px] text-gray-500 uppercase">${item.servico}</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button onclick="window.alternarStatus('${d.id}', '${item.status}')" class="text-xl">${isPago ? '✅' : '💰'}</button>
-                            <button onclick="remover('agendamentos','${d.id}')" class="text-gray-700">✕</button>
-                        </div>
-                    </div>`;
+            <div class="card p-4 rounded-xl flex justify-between items-center ${isPago ? 'opacity-40 border-l-4 border-green-500' : 'border-l-4 border-yellow-400'}">
+                <div onclick="window.lembrete('${item.fone}', '${item.cliente}', '${item.hora}')" class="cursor-pointer">
+                    <p class="font-bold text-sm ${isPago ? 'line-through text-gray-500' : 'text-yellow-400'}">${item.hora} - ${item.cliente}</p>
+                    <p class="text-[9px] text-gray-500 uppercase">${item.servico}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="window.alternarStatus('${d.id}', '${item.status}')" class="text-xl">${isPago ? '✅' : '💰'}</button>
+                    <button onclick="remover('agendamentos','${d.id}')" class="text-gray-700">✕</button>
+                </div>
+            </div>`;
                 });
                 document.getElementById("agenda").innerHTML = html || "<p class='text-center py-10 text-gray-600 text-xs'>Nenhum horário hoje.</p>";
                 document.getElementById("faturamento").innerHTML = `R$ ${pago.toFixed(2)} <span class="block text-[10px] text-gray-500 font-normal">Pendente: R$ ${pendente.toFixed(2)}</span>`;
@@ -302,20 +404,22 @@
             await updateDoc(doc(db, "agendamentos", id), { status: status === "pendente" ? "concluido" : "pendente" });
         };
         window.lembrete = (fone, nome, hora) => {
-            if(!fone) return alert("Sem telefone!");
-            window.open(`https://wa.me/55${fone}?text=${encodeURIComponent('Olá '+nome+', confirmando seu horário às '+hora+'?')}`);
+            if (!fone) return alert("Sem telefone!");
+            window.open(`https://wa.me/55${fone}?text=${encodeURIComponent('Olá ' + nome + ', confirmando seu horário às ' + hora + '?')}`);
         };
-        window.remover = async (col, id) => { if(confirm("Excluir?")) await deleteDoc(doc(db, col, id)); };
+        window.remover = async (col, id) => { if (confirm("Excluir?")) await deleteDoc(doc(db, col, id)); };
         window.modal = (v) => document.getElementById("modal").classList.toggle("hidden", !v);
         window.openModal = (id) => document.getElementById(id).classList.remove("hidden");
         window.closeModal = (id) => document.getElementById(id).classList.add("hidden");
 
         // --- CLIQUES ---
         document.getElementById("logout").onclick = () => signOut(auth);
+        document.getElementById("logout-bloqueio").onclick = () => signOut(auth);
         document.getElementById("abrirModal").onclick = () => modal(true);
         document.getElementById("salvar").onclick = async () => {
             const cli = document.getElementById("input-cliente");
             const ser = document.getElementById("input-servico");
+            if (!cli.value || !ser.value) return alert("Preencha todos os campos!");
             await addDoc(collection(db, "agendamentos"), {
                 cliente: cli.value,
                 fone: cli.options[cli.selectedIndex].getAttribute('data-fone') || "",
@@ -338,4 +442,5 @@
         };
     </script>
 </body>
+
 </html>
