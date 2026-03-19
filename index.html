@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="icon" href="assets/img/barbersys.ico">
-    <title>Sys Barber Pro</title>
+    <meta name="icon" href="assets/img/iconeAgendaFacil.png">
+    <title>Agenda Fácil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,8 +16,8 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .gold {
-            background: linear-gradient(135deg, #D4AF37, #B8860B);
+        .teal {
+            background: linear-gradient(135deg, #1b38f3, #131530);
         }
 
         .card {
@@ -31,7 +31,7 @@
 
         .tab-active {
             color: #fbbf24;
-            border-bottom: 2px solid #fbbf24;
+            border-bottom: 2px solid #245dfb;
         }
 
         input,
@@ -43,7 +43,7 @@
         }
 
         input:focus {
-            border-color: #D4AF37 !important;
+            border-color: #026e95 !important;
         }
     </style>
 </head>
@@ -52,13 +52,13 @@
     <div id="bloqueio-pagamento"
         class="hidden fixed inset-0 bg-black/90 z-[500] flex items-center justify-center p-6 backdrop-blur-md">
         <div
-            class="card p-8 rounded-2xl w-full max-w-sm text-center border-2 border-yellow-400/50 shadow-[0_0_50px_rgba(212,175,55,0.2)]">
+            class="card p-8 rounded-2xl w-full max-w-sm text-center border-2 border-cyan-400/50 shadow-[0_0_50px_rgba(212,175,55,0.2)]">
             <div class="text-5xl mb-4">💳</div>
             <h2 class="text-2xl font-bold text-white mb-2 italic">Assinatura Expirada</h2>
-            <p class="text-gray-400 text-sm mb-6">Para continuar gerenciando sua barbearia e recebendo agendamentos
+            <p class="text-gray-400 text-sm mb-6">Para continuar gerenciando seus agendamentos e faturamento
                 online, ative sua licença PRO.</p>
             <a href="https://wa.me/55SEUNUMERO" target="_blank"
-                class="gold block w-full p-4 rounded-xl text-black font-bold uppercase hover:scale-105 transition">Ativar
+                class="teal block w-full p-4 rounded-xl text-black font-bold uppercase hover:scale-105 transition">Ativar
                 Agora</a>
             <button id="logout-bloqueio" class="mt-4 text-xs text-gray-600 underline uppercase tracking-widest">Sair da
                 conta</button>
@@ -66,23 +66,23 @@
     </div>
 
     <div id="loading" class="min-h-screen flex items-center justify-center fixed inset-0 bg-[#121212] z-[300]">
-        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-yellow-400"></div>
+        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-cyan-400"></div>
     </div>
 
     <div id="login" class="hidden min-h-screen flex items-center justify-center p-6">
-        <div class="card p-8 rounded-xl w-full max-w-md shadow-2xl border-t-4 border-yellow-400">
-            <h1 id="login-title" class="text-3xl font-bold text-center mb-2 italic">Sys <span
-                    class="text-yellow-400">Barber</span></h1>
+        <div class="card p-8 rounded-xl w-full max-w-md shadow-2xl border-t-4 border-blue-400">
+            <h1 id="login-title" class="text-3xl font-bold text-center mb-2 italic">Agenda <span
+                    class="text-cyan-500">Fácil</span></h1>
             <p id="login-subtitle" class="text-center text-gray-500 text-xs mb-8 uppercase tracking-widest">Gestão
                 Profissional</p>
             <div id="area-cadastro" class="hidden mb-3">
-                <input id="reg-nome-barbearia" placeholder="Nome da sua Barbearia" class="w-full p-3 rounded">
+                <input id="reg-nome-barbearia" placeholder="Nome do seu negócio" class="w-full p-3 rounded">
             </div>
             <input id="email" placeholder="Email" class="w-full p-3 mb-3 rounded">
             <input id="senha" type="password" placeholder="Senha" class="w-full p-3 mb-4 rounded">
             <button id="btn-principal"
-                class="gold w-full p-3 rounded font-bold text-black uppercase hover:brightness-110 transition">Entrar</button>
-            <button id="btn-alternar" class="w-full mt-4 text-xs text-gray-500 hover:text-yellow-400 underline">Não tem
+                class="teal w-full p-3 rounded font-bold text-black uppercase hover:brightness-110 transition">Entrar</button>
+            <button id="btn-alternar" class="w-full mt-4 text-xs text-gray-500 hover:text-teal-400 underline">Não tem
                 conta? Criar agora</button>
         </div>
     </div>
@@ -90,7 +90,7 @@
     <div id="dashboard" class="hidden">
         <nav
             class="p-4 border-b border-gray-800 flex justify-between items-center sticky top-0 bg-[#121212]/90 backdrop-blur-md z-50">
-            <h1 class="font-bold italic brand-name">Sys <span class="text-yellow-400">Barber</span></h1>
+            <h1 class="font-bold italic brand-name">Agenda <span class="text-teal-400">Fácil</span></h1>
             <button id="logout"
                 class="text-red-400 text-[10px] font-bold uppercase border border-red-400/20 px-3 py-1 rounded-full">Sair</button>
         </nav>
@@ -101,12 +101,13 @@
             <button onclick="tab('clientes')" id="t-clientes" class="p-4 tab-btn">Clientes</button>
             <button onclick="tab('servicos')" id="t-servicos" class="p-4 tab-btn">Serviços</button>
             <button onclick="tab('config')" id="t-config" class="p-4 tab-btn">Config</button>
+            <button onclick="tab('historico')" id="t-historico" class="p-4 tab-btn">Histórico</button>
         </div>
 
         <main class="p-6 max-w-2xl mx-auto pb-32">
             <div id="view-home" class="view">
                 <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="card p-5 rounded-2xl border-l-4 border-yellow-400 shadow-lg">
+                    <div class="card p-5 rounded-2xl border-l-4 border-cyan-400 shadow-lg">
                         <p class="text-gray-500 text-[10px] uppercase font-bold tracking-tighter">Faturamento Hoje</p>
                         <h2 id="faturamento" class="text-2xl font-bold text-white">R$ 0,00</h2>
                     </div>
@@ -122,7 +123,7 @@
 
             <div id="view-clientes" class="view hidden">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="font-bold uppercase text-xs tracking-widest text-yellow-400">Meus Clientes</h2>
+                    <h2 class="font-bold uppercase text-xs tracking-widest text-cyan-400">Meus Clientes</h2>
                     <button onclick="openModal('modal-cliente')"
                         class="bg-white/5 px-3 py-1 rounded text-[10px] font-bold">+ NOVO</button>
                 </div>
@@ -131,7 +132,7 @@
 
             <div id="view-servicos" class="view hidden">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="font-bold uppercase text-xs tracking-widest text-yellow-400">Tabela de Preços</h2>
+                    <h2 class="font-bold uppercase text-xs tracking-widest text-cyan-400">Tabela de Preços</h2>
                     <button onclick="openModal('modal-servico')"
                         class="bg-white/5 px-3 py-1 rounded text-[10px] font-bold">+ NOVO</button>
                 </div>
@@ -139,22 +140,22 @@
             </div>
 
             <div id="view-config" class="view hidden">
-                <h2 class="font-bold uppercase text-xs tracking-widest text-yellow-400 mb-6 text-center">Configurações
+                <h2 class="font-bold uppercase text-xs tracking-widest text-cyan-400 mb-6 text-center">Configurações
                 </h2>
                 <div class="card p-6 rounded-2xl space-y-6">
                     <div class="text-center">
-                        <p class="text-[10px] text-gray-600 uppercase mb-2">Sua Barbearia</p>
+                        <p class="text-[10px] text-gray-600 uppercase mb-2">Seu agendamento</p>
                         <p id="display-nome-barber" class="text-xl font-bold text-white">---</p>
                         <p id="user-email-display" class="text-xs text-gray-400 font-mono mt-1">---</p>
                     </div>
 
-                    <div class="p-4 bg-yellow-400/5 rounded-xl border border-dashed border-yellow-400/30">
-                        <p class="text-[10px] text-yellow-400 uppercase font-bold mb-2">Seu Link de Agendamento Online
+                    <div class="p-4 bg-cyan-400/5 rounded-xl border border-dashed border-cyan-400/30">
+                        <p class="text-[10px] text-cyan-400 uppercase font-bold mb-2">Seu Link de Agendamento Online
                         </p>
                         <div class="flex gap-2">
                             <input id="link-externo" readonly class="text-[10px] bg-black/50 p-2 rounded flex-1">
                             <button onclick="copiarLink()"
-                                class="gold text-black px-3 py-1 rounded text-[10px] font-bold">COPIAR</button>
+                                class="teal text-black px-3 py-1 rounded text-[10px] font-bold">COPIAR</button>
                         </div>
                     </div>
 
@@ -165,22 +166,27 @@
                             <p class="text-[10px] text-gray-500 italic">Notificar novos agendamentos online</p>
                         </div>
                         <button onclick="ativarNotificacoes()"
-                            class="text-yellow-400 text-xs font-bold underline">ATIVAR</button>
+                            class="text-teal-400 text-xs font-bold underline">ATIVAR</button>
                     </div>
                 </div>
+            </div>
+            <div id="view-historico" class="view hidden">
+                <h2 class="font-bold uppercase text-xs tracking-widest text-teal-400 mb-6 text-center">Histórico de
+                    Atendimentos</h2>
+                <div id="historico-lista" class="space-y-3"></div>
             </div>
         </main>
 
         <button id="abrirModal"
-            class="fixed bottom-8 right-6 w-16 h-16 gold rounded-full text-black text-3xl shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-40">
+            class="fixed bottom-8 right-6 w-16 h-16 teal rounded-full text-black text-3xl shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-40">
             <span class="mb-1">+</span>
         </button>
     </div>
 
     <div id="modal"
         class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
-        <div class="card p-6 rounded-2xl w-full max-w-md shadow-2xl border border-yellow-400/20">
-            <h2 class="font-bold mb-6 text-yellow-400 uppercase text-xs tracking-widest text-center">Novo Agendamento
+        <div class="card p-6 rounded-2xl w-full max-w-md shadow-2xl border border-cyan-400/20">
+            <h2 class="font-bold mb-6 text-cyan-400 uppercase text-xs tracking-widest text-center">Novo Agendamento
             </h2>
             <div class="space-y-3">
                 <label class="text-[10px] text-gray-500 uppercase font-bold">Cliente</label>
@@ -201,7 +207,7 @@
                     <button onclick="modal(false)"
                         class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Cancelar</button>
                     <button id="salvar"
-                        class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Confirmar</button>
+                        class="flex-1 teal text-black p-4 rounded text-xs font-bold uppercase">Confirmar</button>
                 </div>
             </div>
         </div>
@@ -209,28 +215,28 @@
 
     <div id="modal-cliente" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4">
         <div class="card p-6 rounded-2xl w-full max-w-md">
-            <h2 class="font-bold mb-6 text-yellow-400 uppercase text-xs tracking-widest">Adicionar Cliente</h2>
+            <h2 class="font-bold mb-6 text-teal-400 uppercase text-xs tracking-widest">Adicionar Cliente</h2>
             <input id="c-nome" placeholder="Nome Completo" class="w-full p-3 mb-3 rounded">
             <input id="c-fone" placeholder="WhatsApp (DDD + Número)" class="w-full p-3 mb-6 rounded">
             <div class="flex gap-3">
                 <button onclick="closeModal('modal-cliente')"
                     class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Voltar</button>
                 <button id="btn-save-cliente"
-                    class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Cadastrar</button>
+                    class="flex-1 teal text-black p-4 rounded text-xs font-bold uppercase">Cadastrar</button>
             </div>
         </div>
     </div>
 
     <div id="modal-servico" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4">
         <div class="card p-6 rounded-2xl w-full max-w-md">
-            <h2 class="font-bold mb-6 text-yellow-400 uppercase text-xs tracking-widest">Configurar Serviço</h2>
+            <h2 class="font-bold mb-6 text-cyan-400 uppercase text-xs tracking-widest">Configurar Serviço</h2>
             <input id="s-nome" placeholder="Ex: Corte Degradê" class="w-full p-3 mb-3 rounded">
             <input id="s-preco" type="number" placeholder="Preço" class="w-full p-3 mb-6 rounded">
             <div class="flex gap-3">
                 <button onclick="closeModal('modal-servico')"
                     class="flex-1 bg-white/5 p-4 rounded text-xs font-bold uppercase">Voltar</button>
                 <button id="btn-save-servico"
-                    class="flex-1 gold text-black p-4 rounded text-xs font-bold uppercase">Salvar</button>
+                    class="flex-1 teal text-black p-4 rounded text-xs font-bold uppercase">Salvar</button>
             </div>
         </div>
     </div>
@@ -278,7 +284,7 @@
         document.getElementById("btn-alternar").onclick = () => {
             modoCadastro = !modoCadastro;
             document.getElementById("area-cadastro").classList.toggle("hidden", !modoCadastro);
-            document.getElementById("btn-principal").innerText = modoCadastro ? "Criar Barbearia" : "Entrar";
+            document.getElementById("btn-principal").innerText = modoCadastro ? "Criar negócio" : "Entrar";
             document.getElementById("btn-alternar").innerText = modoCadastro ? "Já tenho conta? Entrar" : "Não tem conta? Criar agora";
         };
 
@@ -311,7 +317,7 @@
                         const agora = new Date();
                         const expiraEm = data.expiraEm ? data.expiraEm.toDate() : null;
 
-                        document.querySelectorAll(".brand-name").forEach(el => el.innerHTML = `${data.nomeBarbearia} <span class="text-yellow-400 text-[10px] ml-1 uppercase font-bold">Pro</span>`);
+                        document.querySelectorAll(".brand-name").forEach(el => el.innerHTML = `${data.nomeBarbearia} <span class="text-cyan-400 text-[10px] ml-1 uppercase font-bold">Pro</span>`);
                         document.getElementById("display-nome-barber").innerText = data.nomeBarbearia;
                         document.getElementById("user-email-display").innerText = user.email;
 
@@ -348,7 +354,6 @@
                 });
             });
         }
-
         // --- CARREGAMENTO REALTIME ---
         function carregarTudo() {
             const uid = auth.currentUser.uid;
@@ -359,9 +364,9 @@
                     const isPago = item.status === "concluido";
                     if (isPago) pago += item.preco; else pendente += item.preco;
                     html += `
-                    <div class="card p-4 rounded-xl flex justify-between items-center ${isPago ? 'opacity-40 border-l-4 border-green-500' : 'border-l-4 border-yellow-400'}">
+                    <div class="card p-4 rounded-xl flex justify-between items-center ${isPago ? 'opacity-40 border-l-4 border-green-500' : 'border-l-4 border-cyan-400'}">
                         <div onclick="window.lembrete('${item.fone}', '${item.cliente}', '${item.hora}')" class="cursor-pointer">
-                            <p class="font-bold text-sm ${isPago ? 'line-through text-gray-500' : 'text-yellow-400'}">${item.hora} - ${item.cliente} ${item.externo ? '<span class="text-[8px] bg-yellow-400 text-black px-1 rounded ml-1">ONLINE</span>' : ''}</p>
+                            <p class="font-bold text-sm ${isPago ? 'line-through text-gray-500' : 'text-cyan-400'}">${item.hora} - ${item.cliente} ${item.externo ? '<span class="text-[8px] bg-cyan-400 text-black px-1 rounded ml-1">ONLINE</span>' : ''}</p>
                             <p class="text-[9px] text-gray-500 uppercase">${item.servico}</p>
                         </div>
                         <div class="flex items-center gap-3">
@@ -393,14 +398,14 @@
                 snap.forEach(d => {
                     const s = d.data();
                     html += `
-        <div class="card p-3 flex justify-between items-center border-l-2 border-yellow-600">
-            <div>
-                <p class="font-medium text-sm text-white">${s.nome}</p>
-                <p class="text-[9px] text-gray-500 italic">${s.emailBarbearia || 'E-mail não registrado'}</p>
-                <p class="text-yellow-500 text-xs font-bold">R$ ${s.preco.toFixed(2)}</p>
-            </div>
-            <button onclick="remover('servicos','${d.id}')" class="text-red-900/50 hover:text-red-500 text-[10px] font-bold uppercase transition">Excluir</button>
-        </div>`;
+                        <div class="card p-3 flex justify-between items-center border-l-2 border-cyan-600">
+                            <div>
+                                <p class="font-medium text-sm text-white">${s.nome}</p>
+                                <p class="text-[9px] text-gray-500 italic">${s.emailBarbearia || 'E-mail não registrado'}</p>
+                                <p class="text-cyan-400 text-xs font-bold">R$ ${s.preco.toFixed(2)}</p>
+                            </div>
+                            <button onclick="remover('servicos','${d.id}')" class="text-red-900/50 hover:text-red-500 text-[10px] font-bold uppercase transition">Excluir</button>
+                        </div>`;
 
                     sel += `<option value="${s.preco}">${s.nome} - R$ ${s.preco.toFixed(2)}</option>`;
                 });
@@ -408,7 +413,56 @@
                 document.getElementById("lista-servicos").innerHTML = html || "<p class='text-center text-gray-600 text-[10px] py-4'>Nenhum serviço cadastrado.</p>";
                 document.getElementById("input-servico").innerHTML = sel;
             });
-        }
+
+
+            // --- MONITORAMENTO DE HISTÓRICO CORRIGIDO ---
+            onSnapshot(query(
+                collection(db, "agendamentos"),
+                where("userId", "==", uid),
+                where("status", "==", "concluido")
+            ), snap => {
+                let html = "";
+                let totalGeral = 0;
+
+                // Converte para array e ordena pela data/hora mais recente no próprio JS
+                const agendamentosOrdenados = snap.docs
+                    .map(d => ({ id: d.id, ...d.data() }))
+                    .sort((a, b) => {
+                        // Ordena por data (decrescente) e depois por hora
+                        return `${b.data} ${b.hora}`.localeCompare(`${a.data} ${a.hora}`);
+                    });
+
+                agendamentosOrdenados.forEach(item => {
+                    totalGeral += item.preco;
+                    html += `
+                <div class="card p-4 rounded-xl border-l-4 border-gray-600 bg-black/20 mb-3">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-bold text-sm text-gray-300">${item.cliente}</p>
+                            <p class="text-[9px] text-gray-500 uppercase">${item.data} • ${item.servico}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-cyan-400 font-bold text-sm">R$ ${item.preco.toFixed(2)}</p>
+                            <span class="text-[8px] bg-green-500/10 text-green-500 px-2 py-0.5 rounded-full uppercase font-bold">Pago</span>
+                        </div>
+                    </div>
+                </div>`;
+                });
+
+                const lista = document.getElementById("historico-lista");
+                if (snap.empty) {
+                    lista.innerHTML = "<p class='text-center py-10 text-gray-600 text-xs italic'>Nenhum atendimento concluído ainda.</p>";
+                } else {
+                    const resumo = `
+                <div class="mb-6 p-4 rounded-2xl bg-cyan-400/5 border border-cyan-400/20 text-center">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Faturamento Total Acumulado</p>
+                    <h3 class="text-xl font-bold text-cyan-400">R$ ${totalGeral.toFixed(2)}</h3>
+                </div>`;
+                    lista.innerHTML = resumo + html;
+                }
+            });
+        };
+        
 
         // --- CLIQUES DE SALVAMENTO ---
         document.getElementById("logout").onclick = () => signOut(auth);
