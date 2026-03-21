@@ -115,10 +115,16 @@
                     class="hidden teal text-black px-4 py-2 rounded-xl text-[10px] font-bold uppercase shadow-lg shadow-blue-900/40">
                     Assinar PRO - R$ 1,00
                 </button>
-                <button id="btn-cancelar-agora"
-                    class="hidden teal text-black px-4 py-2 rounded-xl text-[10px] font-bold  shadow-lg shadow-red-900/40">
-                    Cancelar plano
-                </button>
+                <div class="flex justfy-content-">
+                    <button id="btn-mudar-agora"
+                        class="hidden teal text-black px-4 py-2 rounded-xl text-[10px] font-bold  shadow-lg shadow-blue-900/40">
+                        Mudar plano
+                    </button>
+                    <button id="btn-cancelar-agora"
+                        class="hidden teal text-black px-4 py-2 rounded-xl text-[10px] font-bold  shadow-lg shadow-blue-900/40">
+                        Cancelar plano
+                    </button>
+                </div>
             </div>
         </div>
         <main class="p-6 max-w-2xl mx-auto pb-32">
@@ -324,27 +330,53 @@
         // --- MONITOR DE AUTENTICAÇÃO ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                const docRef = doc(db, "perfis", user.uid);
+                const docSnap = await getDoc(docRef);
                 const linkFinal = `https://barbersys.xyz/agendar.html?id=${user.uid}`;
                 document.getElementById("link-externo").value = linkFinal;
                 onSnapshot(doc(db, "perfis", user.uid), (snap) => {
                     document.getElementById("loading").classList.add("hidden");
                     if (snap.exists()) {
-                        const data = snap.data();
+                        const data = snap.data(); // Usaremos 'data' para tudo
                         const agora = new Date();
+
+                        // Converte o timestamp do Firebase para Data do JS com segurança
                         const expiraEm = data.expiraEm ? data.expiraEm.toDate() : null;
 
-                        document.querySelectorAll(".brand-name").forEach(el => el.innerHTML = `${data.nomeBarbearia} <span class="text-cyan-400 text-[10px] ml-1 uppercase font-bold">Pro</span>`);
-                        document.getElementById("display-nome-barber").innerText = data.nomeBarbearia;
+                        // Atualiza os nomes na tela
+                        document.querySelectorAll(".brand-name").forEach(el => {
+                            el.innerHTML = `${data.nomeBarbearia || 'Minha Barbearia'} <span class="text-cyan-400 text-[10px] ml-1 uppercase font-bold italic">Teste Gratis</span>`;
+                        });
+
+                        document.getElementById("display-nome-barber").innerText = data.nomeBarbearia || "Barbeiro";
                         document.getElementById("user-email-display").innerText = user.email;
 
-                        if (expiraEm && agora > expiraEm) {
-                            document.getElementById("bloqueio-pagamento").classList.remove("hidden");
-                            document.getElementById("dashboard").classList.add("hidden");
-                        } else {
+                        // --- LÓGICA DE BLOQUEIO / ACESSO ---
+
+                        // 1. Se o plano está explicitamente ativo, libera tudo e mostra botões de gestão
+                        if (data.statusPagamento === "ativo") {
+                            document.getElementById("btn-mudar-agora").classList.remove("hidden");
+                            document.getElementById("btn-cancelar-agora").classList.remove("hidden");
+
                             document.getElementById("bloqueio-pagamento").classList.add("hidden");
                             document.getElementById("dashboard").classList.remove("hidden");
-                            document.getElementById("login").classList.add("hidden");
                         }
+                        // 2. Se venceu (Data de hoje maior que a data de expiração)
+                        else if (expiraEm && agora > expiraEm) {
+                            document.getElementById("bloqueio-pagamento").classList.remove("hidden");
+                            document.getElementById("dashboard").classList.add("hidden");
+                            // Esconde os botões de gestão já que o plano não está mais ativo
+                            document.getElementById("btn-mudar-agora").classList.add("hidden");
+                            document.getElementById("btn-cancelar-agora").classList.add("hidden");
+                        }
+                        // 3. Caso padrão (Usuário novo ou sem plano ainda)
+                        else {
+                            document.getElementById("bloqueio-pagamento").classList.remove("hidden");
+                            document.getElementById("dashboard").classList.add("hidden");
+                        }
+
+                        // Sempre esconde o login se o usuário chegou até aqui
+                        document.getElementById("login").classList.add("hidden");
                     }
                 });
                 onSnapshot(doc(db, "perfis", user.uid), (snap) => {
@@ -356,6 +388,7 @@
 
                         // --- LOGICA DA INTERFACE DE ASSINATURA ---
                         const btnAssinar = document.getElementById("btn-assinar-agora");
+                        const btnMudar = document.getElementById("btn-mudar-agora");
                         const btnCancelar = document.getElementById("btn-cancelar-agora");
                         const txtStatus = document.getElementById("status-plano-texto");
                         const txtExpira = document.getElementById("data-expira-texto");
@@ -363,12 +396,13 @@
                         const isPro = expiraEm && agora < expiraEm && data.statusPagamento === "ativo";
 
                         if (isPro) {
-                            txtStatus.innerText = "Plano PRO Ativo";
+                            txtStatus.innerText = "Plano Basic Ativo";
                             txtStatus.className = "text-lg font-bold text-cyan-400";
                             txtExpira.innerText = `Válido até: ${expiraEm.toLocaleDateString('pt-BR')}`;
 
                             btnAssinar.classList.add("hidden");
                             btnCancelar.classList.remove("hidden");
+                            btnMudar.classList.remove("hidden");
                         } else {
                             txtStatus.innerText = "Plano Grátis / Expirado";
                             txtStatus.className = "text-lg font-bold text-yellow-500";
@@ -376,6 +410,7 @@
 
                             btnAssinar.classList.remove("hidden");
                             btnCancelar.classList.add("hidden");
+                            btnMudar.classList.add("hidden");
                         }
 
                         // --- AÇÕES DOS BOTÕES ---
@@ -384,7 +419,9 @@
                         btnAssinar.onclick = () => {
                             window.location.href = `checkout.html?plan=PRO%20Mensal&amount=1.00`;
                         };
-
+                        btnMudar.onclick = () => {
+                            window.location.href = `contratacaoAssinatura.html?plan=PRO%20Mensal&amount=1.00`;
+                        };
                         // Cancelar Plano (Muda status no Firebase)
                         btnCancelar.onclick = async () => {
                             if (confirm("Deseja realmente cancelar sua assinatura PRO?")) {
