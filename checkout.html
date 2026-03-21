@@ -128,7 +128,7 @@
 
         // 2. Função para iniciar o Mercado Pago (Só roda se o formulário existir)
         const iniciarMercadoPago = () => {
-            const public_key = 'APP_USR-77f18003-2f39-494a-8a4b-1f520924c239';
+            const public_key = 'APP_USR-4622444396438923-032022-fb8b8ec8f8ae891918be16bfeccf9992-3281358589';
             const mp = new MercadoPago(public_key);
 
             // Verifica se o formulário está no DOM antes de iniciar
@@ -161,49 +161,67 @@
                     onSubmit: async event => {
                         event.preventDefault();
 
-                        // Mostra um loading (opcional)
                         const btn = document.getElementById("form-checkout__submit");
-                        if (btn) btn.innerText = "PROCESSANDO...";
+                        if (btn) {
+                            btn.innerText = "PROCESSANDO...";
+                            btn.disabled = true; // Evita cliques duplos que geram cobranças repetidas
+                        }
 
                         try {
+                            // 1. Pegamos os dados do cartão gerados pelo Mercado Pago
                             const formData = cardForm.getCardFormData();
 
                             if (auth.currentUser) {
+                                // 2. Garantimos que o valor seja um número (Double/Float) para o Firebase
+                                // Isso evita que ele salve como texto "10.00" e sim como número 10
+                                const valorNumerico = parseFloat(valor);
+
                                 const expira = new Date();
                                 expira.setMonth(expira.getMonth() + 1);
 
+                                // 3. Atualizamos o perfil com o valor REAL da transação
                                 await updateDoc(doc(db, "perfis", auth.currentUser.uid), {
                                     statusPagamento: "ativo",
                                     planoAtivo: plano,
                                     expiraEm: expira,
                                     dataPagamento: serverTimestamp(),
-                                    valorAssinatura: valor
+                                    valorAssinatura: valorNumerico, // Valor exato da compra
+                                    metodoPagamento: "cartao_credito"
                                 });
 
-                                window.location.href = `sucesso.html?id=MP-${Math.random().toString(36).substring(7).toUpperCase()}`;
+                                // 4. Redirecionamos passando o valor também para a tela de sucesso
+                                window.location.href = `sucesso.html?valor=${valorNumerico}&id=MP-${Math.random().toString(36).substring(7).toUpperCase()}`;
                             } else {
                                 alert("Erro: Usuário não identificado. Faça login novamente.");
+                                if (btn) {
+                                    btn.innerText = "FINALIZAR PAGAMENTO";
+                                    btn.disabled = false;
+                                }
                             }
                         } catch (e) {
+                            console.error("Erro no checkout:", e);
                             alert("Erro ao processar pagamento: " + e.message);
-                            if (btn) btn.innerText = "FINALIZAR PAGAMENTO";
+                            if (btn) {
+                                btn.innerText = "FINALIZAR PAGAMENTO";
+                                btn.disabled = false;
+                            }
                         }
                     }
                 }
             });
-        };
 
-        // 3. Aguarda o Firebase confirmar o usuário para liberar o Mercado Pago
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log("Usuário logado:", user.email);
-                // Pequeno delay para garantir que o HTML está 100% renderizado
-                setTimeout(iniciarMercadoPago, 500);
-            } else {
-                alert("Você precisa estar logado para assinar.");
-                window.location.href = "index.html";
-            }
-        });
+            // 3. Aguarda o Firebase confirmar o usuário para liberar o Mercado Pago
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("Usuário logado:", user.email);
+                    // Pequeno delay para garantir que o HTML está 100% renderizado
+                    setTimeout(iniciarMercadoPago, 500);
+                } else {
+                    alert("Você precisa estar logado para assinar.");
+                    window.location.href = "index.html";
+                }
+            });
+        }
     </script>
 </body>
 
