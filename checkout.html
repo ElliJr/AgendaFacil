@@ -132,7 +132,7 @@
 
         const iniciarMercadoPago = () => {
             const mp = new MercadoPago('APP_USR-77f18003-2f39-494a-8a4b-1f520924c239'); // Use sua Public Key (APP_USR-...)
-            
+
             const cardForm = mp.cardForm({
                 amount: valorOriginal,
                 iframe: true,
@@ -155,7 +155,7 @@
                     },
                     onSubmit: async event => {
                         event.preventDefault();
-
+                        console.log("Formulário enviado.");
                         const btn = document.getElementById("form-checkout__submit");
                         btn.innerText = "PROCESSANDO PAGAMENTO...";
                         btn.disabled = true;
