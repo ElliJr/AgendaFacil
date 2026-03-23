@@ -64,7 +64,11 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+        import serviceAccount from "./serviceAccount.json" assert { type: "json" };
+        
+        initializeApp({
+            credential: cert(serviceAccount)
+        });
         const firebaseConfig = {
             apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
             authDomain: "agendafacil-1.firebaseapp.com",
