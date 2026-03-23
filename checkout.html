@@ -132,7 +132,6 @@
         document.getElementById('plano-nome').innerText = plano;
 
         const iniciarMercadoPago = () => {
-            const mp = new MercadoPago('APP_USR-77f18003-2f39-494a-8a4b-1f520924c239'); // Public Key 
 
             const cardForm = mp.cardForm({
                 amount: valorOriginal,
@@ -184,7 +183,7 @@
 
                             if (respostaMP.success) {
                                 // Se o backend retornou sucesso, redireciona para a tela de confirmação
-                                window.location.href = `sucesso.html?id=${respostaMP.id}&valor=${valorOriginal}&plan=${plano}`;
+                                window.location.href = `sucesso.html?id=${respostaMP.id}&plan=${plano}`;
                             } else {
                                 // Se o pagamento foi recusado (ex: sem saldo)
                                 alert(`Pagamento não aprovado: ${respostaMP.status}. Verifique seu cartão.`);

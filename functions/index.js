@@ -11,11 +11,11 @@ setGlobalOptions({ maxInstances: 10, region: "us-central1" });
 // CONFIGURAÇÃO DO MERCADO PAGO
 // Importante: Substitua pelo seu Access Token REAL que você pegou no painel do MP
 const client = new MercadoPagoConfig({ 
-    accessToken: 'APP_USR-4622444396438923-032022-fb8b8ec8f8ae891918be16bfeccf9992-3281358589', 
+    accessToken: process.env.MP_ACCESS_TOKEN, 
     options: { timeout: 10000 } 
 });
 
-export const processarPagamento = onCall({ cors: true }, async (request) => {
+export const processarPagamento = onCall({ cors: true}, async (request) => {
     // Restante do seu código igual...
     if (!request.auth) {
         throw new HttpsError('unauthenticated', 'Usuário não logado.');
