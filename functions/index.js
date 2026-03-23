@@ -1,10 +1,9 @@
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { setGlobalOptions } = require("firebase-functions");
-const admin = require("firebase-admin");
-const { MercadoPagoConfig, Payment } = require('mercadopago');
-
+import { setGlobalOptions } from "firebase-functions";
+import { initializeApp, firestore } from "firebase-admin";
+import { MercadoPagoConfig, Payment } from 'mercadopago';
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 // Inicializa o Admin SDK do Firebase
-admin.initializeApp();
+initializeApp();
 
 // Configurações globais para economizar recursos (Plano Blaze)
 setGlobalOptions({ maxInstances: 10, region: "us-central1" });
@@ -16,7 +15,7 @@ const client = new MercadoPagoConfig({
     options: { timeout: 10000 } 
 });
 
-exports.processarPagamento = onCall({ cors: true }, async (request) => {
+export const processarPagamento = onCall({ cors: true }, async (request) => {
     // Restante do seu código igual...
     if (!request.auth) {
         throw new HttpsError('unauthenticated', 'Usuário não logado.');
@@ -24,10 +23,16 @@ exports.processarPagamento = onCall({ cors: true }, async (request) => {
 
     const data = request.data; 
     const payment = new Payment(client);
+    const valorDoSistema = 19.90; // Valor fixo do plano PRO
+
+    if(parseFloat(data.amount) !== valorDoSistema) {
+        console.error(`Ta tentando oque mano 😡: ${request.auth.uid}`);
+        throw new HttpsError('invalid-argument', 'Valor do pagamento inconsiste com o plano de pagamento.');
+    }
 
     // Montagem do corpo do pagamento conforme API v2 do Mercado Pago
     const body = {
-        transaction_amount: parseFloat(data.amount),
+        transaction_amount: valorDoSistema,
         token: data.token,
         description: data.description,
         installments: parseInt(data.installments),
@@ -51,13 +56,13 @@ exports.processarPagamento = onCall({ cors: true }, async (request) => {
             expira.setMonth(expira.getMonth() + 1); // Adiciona 30 dias de acesso
 
             // ATUALIZA O PERFIL DO BARBEIRO NO FIRESTORE
-            const userRef = admin.firestore().collection("perfis").doc(request.auth.uid);
+            const userRef = firestore().collection("perfis").doc(request.auth.uid);
             
             await userRef.update({
                 statusPagamento: "ativo",
                 planoAtivo: data.description,
                 expiraEm: expira,
-                ultimoPagamento: admin.firestore.FieldValue.serverTimestamp(),
+                ultimoPagamento: firestore.FieldValue.serverTimestamp(),
                 valorAssinatura: data.amount,
                 idTransacaoMP: result.id,
                 metodoPagamento: result.payment_method_id

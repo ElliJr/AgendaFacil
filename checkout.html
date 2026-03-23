@@ -110,12 +110,13 @@
         import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAa4sZN42xSCw1nggj5wi-_AsuzGMfBEYg",
-            authDomain: "barbershopsaas-2af6c.firebaseapp.com",
-            projectId: "barbershopsaas-2af6c",
-            storageBucket: "barbershopsaas-2af6c.firebasestorage.app",
-            messagingSenderId: "939177796204",
-            appId: "1:939177796204:web:85557a0c3665721cd8ae49"
+            apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
+            authDomain: "agendafacil-1.firebaseapp.com",
+            projectId: "agendafacil-1",
+            storageBucket: "agendafacil-1.firebasestorage.app",
+            messagingSenderId: "862585496599",
+            appId: "1:862585496599:web:2a360f1147a334d1342852",
+            measurementId: "G-BQK2DBX0S6"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -124,14 +125,14 @@
 
         // 1. Captura os dados da URL
         const params = new URLSearchParams(window.location.search);
-        const valorOriginal = params.get('amount') || "0.00";
+        const valorOriginal = params.get('amount') || "19,90";
         const plano = params.get('plan') || "Plano Profissional";
 
         document.getElementById('valor-display').innerText = `R$ ${valorOriginal.replace('.', ',')}`;
         document.getElementById('plano-nome').innerText = plano;
 
         const iniciarMercadoPago = () => {
-            const mp = new MercadoPago('APP_USR-77f18003-2f39-494a-8a4b-1f520924c239'); // Use sua Public Key (APP_USR-...)
+            const mp = new MercadoPago('APP_USR-77f18003-2f39-494a-8a4b-1f520924c239'); // Public Key 
 
             const cardForm = mp.cardForm({
                 amount: valorOriginal,

@@ -85,6 +85,8 @@
                 class="teal w-full p-3 rounded font-bold text-black uppercase hover:brightness-110 transition">Entrar</button>
             <button id="btn-alternar" class="w-full mt-4 text-xs text-gray-500 hover:text-teal-400 underline">Não tem
                 conta? Criar agora</button>
+            <button id="btn-esqueci-senha"
+                class="w-full mt-4 text-xs text-gray-500 hover:text-teal-400 underline">Esqueci a senha</button>
         </div>
     </div>
 
@@ -271,13 +273,13 @@
         import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, serverTimestamp, where, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyAa4sZN42xSCw1nggj5wi-_AsuzGMfBEYg",
-            authDomain: "barbershopsaas-2af6c.firebaseapp.com",
-            projectId: "barbershopsaas-2af6c",
-            storageBucket: "barbershopsaas-2af6c.firebasestorage.app",
-            messagingSenderId: "939177796204",
-            appId: "1:939177796204:web:85557a0c3665721cd8ae49",
-            measurementId: "G-8VXQJZ6DWG"
+            apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
+            authDomain: "agendafacil-1.firebaseapp.com",
+            projectId: "agendafacil-1",
+            storageBucket: "agendafacil-1.firebasestorage.app",
+            messagingSenderId: "862585496599",
+            appId: "1:862585496599:web:2a360f1147a334d1342852",
+            measurementId: "G-BQK2DBX0S6"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -311,7 +313,9 @@
             document.getElementById("btn-principal").innerText = modoCadastro ? "Criar negócio" : "Entrar";
             document.getElementById("btn-alternar").innerText = modoCadastro ? "Já tenho conta? Entrar" : "Não tem conta? Criar agora";
         };
-
+        document.getElementById("btn-esqueci-senha").onclick = () => {
+            window.location.href = "esqueciSenha.html";
+        };
         document.getElementById("btn-principal").onclick = async () => {
             const email = document.getElementById("email").value;
             const senha = document.getElementById("senha").value;
@@ -319,7 +323,7 @@
             if (!email || !senha) return alert("Preencha email e senha!");
             try {
                 if (modoCadastro) {
-                    if (!nomeBarber) return alert("Digite o nome da sua barbearia!");
+                    if (!nomeBarber) return alert("Digite o nome do seu negocio!");
                     const res = await createUserWithEmailAndPassword(auth, email, senha);
                     const exp = new Date(); exp.setDate(exp.getDate() + 3);
                     await setDoc(doc(db, "perfis", res.user.uid), { nomeBarbearia: nomeBarber, email: email, statusPagamento: "ativo", expiraEm: exp, criadoEm: new Date() });
@@ -417,7 +421,7 @@
 
                         // Pagar 1 Real (Redireciona para o seu checkout.html)
                         btnAssinar.onclick = () => {
-                            window.location.href = `checkout.html?plan=PRO%20Mensal&amount=1.00`;
+                            window.location.href = `checkout.html?plan=PRO%20Mensal&amount=19.90`;
                         };
                         btnMudar.onclick = () => {
                             window.location.href = `contratacaoAssinatura.html?plan=PRO%20Mensal&amount=1.00`;

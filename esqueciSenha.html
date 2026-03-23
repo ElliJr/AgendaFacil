@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha - BarberShop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #121212;
+            /* Fundo escuro padrão do seu SaaS */
+            font-family: 'Inter', sans-serif;
+        }
+
+        .card-dark {
+            background: #1E1E1E;
+            border: 1px solid #2D2D2D;
+        }
+
+        input {
+            background: #2D2D2D !important;
+            color: white !important;
+            border: 1px solid #444 !important;
+        }
+
+        .btn-cyan {
+            background: linear-gradient(135deg, #0891b2, #1e3a8a);
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="max-w-md w-full card-dark rounded-[2.5rem] p-10 shadow-2xl border border-white/5">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold italic text-white">Agenda <span class="text-cyan-400">Fácil</span></h1>
+            <p class="text-gray-500 text-xs uppercase tracking-widest mt-2">Recuperar Senha</p>
+        </div>
+
+        <form id="form-recuperar">
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] text-gray-500 uppercase font-bold ml-1">Seu E-mail de Cadastro</label>
+                    <input type="email" id="email-recuperacao" placeholder="exemplo@email.com"
+                        class="w-full p-4 rounded-2xl outline-none focus:border-cyan-400 transition" required>
+                </div>
+
+                <button type="submit" id="btn-enviar"
+                    class="btn-cyan w-full text-black font-bold py-4 rounded-2xl uppercase tracking-widest text-xs mt-4 shadow-lg active:scale-95 transition">
+                    Enviar Link de Redefinição
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-8">
+            <a href="index.html" id="backLogin"
+                class="text-gray-500 hover:text-cyan-400 text-xs uppercase font-bold transition">
+                Voltar para o Login
+            </a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
+            authDomain: "agendafacil-1.firebaseapp.com",
+            projectId: "agendafacil-1",
+            storageBucket: "agendafacil-1.firebasestorage.app",
+            messagingSenderId: "862585496599",
+            appId: "1:862585496599:web:2a360f1147a334d1342852",
+            measurementId: "G-BQK2DBX0S6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const form = document.getElementById('form-recuperar');
+        const btn = document.getElementById('btn-enviar');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email-recuperacao').value;
+
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("Sucesso! Um e-mail de recuperação foi enviado para: " + email);
+                window.location.href = "index.html";
+            } catch (error) {
+                console.error("Erro ao recuperar:", error.code);
+                let mensagem = "Erro ao enviar e-mail. Tente novamente.";
+
+                if (error.code === 'auth/user-not-found') mensagem = "E-mail não encontrado no sistema.";
+                if (error.code === 'auth/invalid-email') mensagem = "E-mail inválido.";
+
+                alert(mensagem);
+                btn.innerText = "Enviar Link de Redefinição";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>
