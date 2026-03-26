@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Fácil - Gestão Inteligente para Profissionais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #0f1115;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bg-teal-gradient {
+            background: linear-gradient(135deg, #1e3a8a, #0891b2);
+        }
+
+        .card-blur {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 1000px;
+            box-shadow: 0 0 0 5px #ffffff80;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card svg {
+            width: 48px;
+            fill: #333;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+        }
+
+        .card__content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #1e1e1e;
+            transform: rotateX(-90deg);
+            transform-origin: bottom;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover .card__content {
+            transform: rotateX(0deg);
+        }
+
+        .card__title {
+            margin: 0;
+            font-size: 24px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .card:hover svg {
+            scale: 0;
+        }
+
+        .card__description {
+            margin: 10px 0 0;
+            font-size: 14px;
+            color: #777;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="p-6 flex justify-between items-center max-w-6xl mx-auto">
+        <h1 class="text-xl font-800 italic uppercase tracking-tighter">Agenda <span class="text-cyan-400">Fácil</span>
+        </h1>
+        <a href="#demo"
+            class="text-xs font-bold border border-cyan-400/30 px-4 py-2 rounded-full hover:bg-cyan-400 hover:text-black transition">VER
+            DEMONSTRAÇÃO</a>
+    </nav>
+
+    <header class="py-20 px-6 text-center max-w-4xl mx-auto">
+        <span class="text-cyan-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-4 block">SaaS para Autônomos e
+            Negócios</span>
+        <h2 class="text-5xl md:text-7xl font-800 mb-6 leading-tight">Pare de perder tempo com o <span
+                class="gradient-text">WhatsApp.</span></h2>
+        <p class="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">Uma plataforma completa de agendamento online, gestão
+            de faturamento e controle de clientes em tempo real.</p>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="https://agendafacil.buzz" target="_blank"><button
+                class="bg-teal-gradient px-8 py-4 rounded-2xl font-bold text-black hover:scale-105 transition shadow-[0_0_30px_rgba(34,211,238,0.3)]">COMEÇAR
+                AGORA</button></a>
+        </div>
+    </header>
+
+    <section class="py-20 bg-black/30">
+        <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-8">
+            <div class="card-blur p-8 rounded-3xl">
+                <div class="text-3xl mb-4">⚡</div>
+                <h3 class="font-bold text-xl mb-2">Agendamento 24/7</h3>
+                <p class="text-gray-500 text-sm">Seu cliente agenda o horário sozinho pelo link exclusivo, mesmo
+                    enquanto você dorme ou trabalha.</p>
+            </div>
+            <div class="card-blur p-8 rounded-3xl">
+                <div class="text-3xl mb-4">💰</div>
+                <h3 class="font-bold text-xl mb-2">Faturamento Real-Time</h3>
+                <p class="text-gray-500 text-sm">Saiba exatamente quanto ganhou no dia e o que ainda tem para receber
+                    com dashboards automáticos.</p>
+            </div>
+            <div class="card-blur p-8 rounded-3xl">
+                <div class="text-3xl mb-4">🔔</div>
+                <h3 class="font-bold text-xl mb-2">Notificações "Plim!"</h3>
+                <p class="text-gray-500 text-sm">Receba alertas sonoros e notificações instantâneas assim que um novo
+                    cliente marcar um horário.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="demo" class="py-20 px-6 max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row items-center gap-12">
+            <div class="flex-1">
+                <h2 class="text-4xl font-bold mb-6">Tecnologia de <br><span class="text-cyan-400">Ponta a Ponta.</span>
+                </h2>
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-3 text-gray-300">
+                        <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span> Banco de dados NoSQL (Firebase)
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-300">
+                        <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span> Autenticação Segura por Usuário
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-300">
+                        <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span> Interface Mobile-First Ultrarrápida
+                    </li>
+                    <li class="flex items-center gap-3 text-gray-300">
+                        <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span> Gestão de Licença e Pagamentos
+                    </li>
+                </ul>
+            </div>
+            <div class="flex-1 relative">
+                <!-- <div class="aspect-video bg-gradient-to-br from-cyan-900/50 to-blue-900/50 rounded-3xl border border-white/10 flex items-center justify-center relative overflow-hidden group">
+                     <p class="text-cyan-400 font-bold italic group-hover:scale-110 transition cursor-default">PREVISUALIZAÇÃO DO APP</p> 
+                     <div class="absolute inset-0 bg-cyan-400/5 opacity-0 group-hover:opacity-100 transition"></div>
+                    </div> -->
+                <div class="card">
+                    <!-- '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' -->
+                    <img src="img/preview.png" width="700px" class="w-full h-full object-cover rounded-3xl"
+                        alt="Preview do App">
+                    <path
+                        d="M20 5H4V19L13.2923 9.70649C13.6828 9.31595 14.3159 9.31591 14.7065 9.70641L20 15.0104V5ZM2 3.9934C2 3.44476 2.45531 3 2.9918 3H21.0082C21.556 3 22 3.44495 22 3.9934V20.0066C22 20.5552 21.5447 21 21.0082 21H2.9918C2.44405 21 2 20.5551 2 20.0066V3.9934ZM8 11C6.89543 11 6 10.1046 6 9C6 7.89543 6.89543 7 8 7C9.10457 7 10 7.89543 10 9C10 10.1046 9.10457 11 8 11Z">
+                    </path>
+                    </svg>
+                    <div class="card__content">
+                        <p class="card__title">Agenda <strong class="text-teal-200">Facil</strong> </p>
+                        <p class="card__description">Desenvolvido para transformar a gestão de profissionais autônomos.
+                            Indo além de um simples calendário, o sistema integra: Dashboard Financeiro em tempo real com Firebase. Agendamento Self-Service via link dinâmico. Sistema de Notificações Ativas (Sons e Web Push). Regras de Negócio SaaS com controle de expiração de licença. Tecnologias: React Native (Mobile), Firebase Firestore (Real-time DB), TailwindCSS.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 text-center bg-teal-gradient mx-6 rounded-[3rem] my-20 :hover:shadow-2xl transition">
+        <h2 class="text-3xl md:text-5xl font-bold text-black mb-8 px-4">Pronto para digitalizar seu negócio?</h2>
+        <button
+            class="bg-black text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-widest hover:bg-gray-900 transition shadow-2xl">SOLICITAR
+            DEMONSTRAÇÃO</button>
+    </section>
+
+    <footer class="py-10 text-center text-gray-600 text-[10px] uppercase tracking-widest">
+        &copy; 2026 Eli Junior Santo de Jesus (Elli) - Desenvolvedor Fullstack
+    </footer>
+
+</body>
+
+</html>

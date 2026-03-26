@@ -23,7 +23,7 @@ export const processarPagamento = onCall({ cors: true}, async (request) => {
 
     const data = request.data; 
     const payment = new Payment(client);
-    const valorDoSistema = 7.90; // Valor fixo do plano PRO
+    const valorDoSistema = 19.90; // Valor fixo do plano PRO
 
     if(parseFloat(data.amount) !== valorDoSistema) {
         console.error(`Ta tentando oque mano 😡: ${request.auth.uid}`);
