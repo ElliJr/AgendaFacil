@@ -1,4 +1,5 @@
 import { setGlobalOptions } from "firebase-functions";
+import { onRequest } from "firebase-functions/v2/https";
 import { initializeApp, firestore } from "firebase-admin";
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { onCall, HttpsError } from "firebase-functions/v2/https";
@@ -6,20 +7,52 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 initializeApp();
 
 setGlobalOptions({ maxInstances: 10, region: "us-central1" });
+const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
 
-const client = new MercadoPagoConfig({ 
-    accessToken: process.env.MP_ACCESS_TOKEN, 
-    options: { timeout: 10000 } 
+export const hookMercadoPago = onRequest({ cors: true }, async (req, res) => {
+    // O Mercado Pago envia o ID do pagamento no corpo ou na query
+    const paymentId = req.body.data?.id || req.query['data.id'];
+
+    if (req.body.type === "payment" && paymentId) {
+        try {
+            const payment = new Payment(client);
+            const result = await payment.get({ id: paymentId });
+
+            // Se o status mudou para aprovado
+            if (result.status === 'approved') {
+                // Lembra do metadata que a gente colocou na outra função?
+                const userId = result.metadata.user_id;
+
+                if (userId) {
+                    const expira = new Date();
+                    expira.setMonth(expira.getMonth() + 1);
+
+                    await firestore().collection("perfis").doc(userId).update({
+                        statusPagamento: "ativo",
+                        expiraEm: expira,
+                        ultimoPagamento: firestore.FieldValue.serverTimestamp(),
+                        idTransacaoMP: result.id
+                    });
+
+                    console.log(`✅ Assinatura liberada para o usuário: ${userId}`);
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao processar Webhook:", error);
+        }
+    }
+
+    // O Mercado Pago exige que você responda 200 ou 201 sempre
+    res.status(200).send("OK");
 });
-
 export const processarPagamento = onCall({ cors: true }, async (request) => {
     if (!request.auth) {
         throw new HttpsError('unauthenticated', 'Usuário não logado.');
     }
 
-    const data = request.data; 
+    const data = request.data;
     const payment = new Payment(client);
-    const valorDoSistema = 19.90; 
+    const valorDoSistema = 19.90;
 
     // Validação de segurança do valor
     if (parseFloat(data.amount) !== valorDoSistema) {
@@ -54,7 +87,7 @@ export const processarPagamento = onCall({ cors: true }, async (request) => {
 
     try {
         const result = await payment.create({ body });
-        
+
         // 1. SE FOR CARTÃO E FOR APROVADO NA HORA
         if (result.status === 'approved') {
             const expira = new Date();
@@ -70,12 +103,12 @@ export const processarPagamento = onCall({ cors: true }, async (request) => {
             });
 
             return { success: true, id: result.id, status: 'approved' };
-        } 
-        
+        }
+
         // 2. SE FOR PIX (O status inicial é 'pending')
         if (result.payment_method_id === 'pix' && result.status === 'pending') {
-            return { 
-                success: true, 
+            return {
+                success: true,
                 status: 'pending',
                 id: result.id,
                 // Dados para o seu pix-checkout.html
@@ -85,17 +118,17 @@ export const processarPagamento = onCall({ cors: true }, async (request) => {
         }
 
         // 3. SE FOR RECUSADO
-        return { 
-            success: false, 
-            status: result.status, 
-            detail: result.status_detail 
+        return {
+            success: false,
+            status: result.status,
+            detail: result.status_detail
         };
 
     } catch (error) {
         console.error("ERRO MP:", error);
-        return { 
-            success: false, 
-            error: "Erro ao processar pagamento. Verifique os dados." 
+        return {
+            success: false,
+            error: "Erro ao processar pagamento. Verifique os dados."
         };
     }
 });
