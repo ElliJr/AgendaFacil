@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Seguro - Agenda Fácil</title>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { background: #0a0a0a; color: white; font-family: 'Inter', sans-serif; }
+        .card-dark { background: #161616; border: 1px solid #262626; }
+        .mp-input { background: #1e1e1e; border: 1px solid #333; border-radius: 12px; height: 52px; padding: 12px; }
+        input, select { background: #1e1e1e !important; color: white !important; border: 1px solid #333 !important; border-radius: 12px; padding: 14px; width: 100%; outline: none; transition: 0.3s; }
+        input:focus { border-color: #22d3ee !important; box-shadow: 0 0 15px rgba(34, 211, 238, 0.1); }
+        .btn-cyan { background: linear-gradient(135deg, #22d3ee, #0891b2); color: black; font-weight: 900; }
+        .tab-active { background: #22d3ee; color: black; }
+        .tab-inactive { color: #555; }
+        .hidden { display: none; }
+    </style>
+</head>
+
+<body class="p-4 flex items-center justify-center min-h-screen">
+
+    <div class="max-w-md w-full card-dark rounded-[3rem] shadow-2xl overflow-hidden border border-white/5">
+        
+        <div class="p-8 text-center border-b border-white/5">
+            <h1 class="text-2xl font-900 italic tracking-tighter uppercase">Agenda <span class="text-cyan-400">Fácil</span></h1>
+            <p id="plano-nome" class="text-neutral-500 text-[9px] font-black uppercase tracking-[0.3em] mt-2 italic">Carregando plano...</p>
+        </div>
+
+        <div class="flex p-1 bg-black/40 mx-8 mt-6 rounded-2xl border border-white/5">
+            <button id="btn-tab-card" class="flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl tab-active transition-all">
+                💳 Cartão
+            </button>
+            <button id="btn-tab-pix" class="flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl tab-inactive transition-all">
+                ⚡ PIX
+            </button>
+        </div>
+
+        <div class="px-8 mt-6">
+            <div class="bg-cyan-400/5 p-6 rounded-3xl border border-cyan-400/10 text-center">
+                <p class="text-neutral-500 text-[9px] uppercase font-black tracking-widest mb-1">Total do Investimento</p>
+                <h2 id="valor-display" class="text-4xl font-900 text-white italic tracking-tighter">R$ 0,00</h2>
+            </div>
+        </div>
+
+        <form id="form-checkout" class="p-8 space-y-4">
+            <div class="space-y-1">
+                <label class="text-[9px] text-neutral-500 uppercase font-black tracking-widest ml-2">Número do Cartão</label>
+                <div id="cardNumberId" class="mp-input shadow-inner"></div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-[9px] text-neutral-500 uppercase font-black tracking-widest ml-2">Expiração</label>
+                    <div id="expirationDateId" class="mp-input"></div>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] text-neutral-500 uppercase font-black tracking-widest ml-2">CVV</label>
+                    <div id="securityCodeId" class="mp-input"></div>
+                </div>
+            </div>
+
+            <input type="text" id="form-checkout__cardholderName" placeholder="NOME IMPRESSO NO CARTÃO" required />
+            <input type="email" id="form-checkout__cardholderEmail" placeholder="E-MAIL PARA RECIBO" required />
+
+            <div class="grid grid-cols-3 gap-2">
+                <select id="form-checkout__identificationType"></select>
+                <input type="text" id="form-checkout__identificationNumber" placeholder="CPF/CNPJ" class="col-span-2" required />
+            </div>
+
+            <select id="form-checkout__issuer" class="hidden"></select>
+            <select id="form-checkout__installments" class="text-xs font-bold"></select>
+
+            <button type="submit" id="form-checkout__submit" class="btn-cyan w-full py-5 rounded-2xl uppercase tracking-widest text-xs mt-6 transition hover:brightness-110 active:scale-95 shadow-xl shadow-cyan-500/10">
+                Finalizar Assinatura
+            </button>
+        </form>
+
+        <div id="sessao-pix" class="hidden p-8 space-y-6 animate-in fade-in duration-500">
+            <div class="bg-white/5 p-8 rounded-[2.5rem] border border-white/5 text-center">
+                <div class="w-16 h-16 bg-cyan-400/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-cyan-400/20">
+                    <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <h3 class="font-black text-sm uppercase tracking-widest mb-2">Aprovação Instantânea</h3>
+                <p class="text-neutral-500 text-[10px] leading-relaxed">Liberação imediata do seu painel administrativo <br> após a confirmação do pagamento.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <input type="text" id="pix-cpf" placeholder="CPF DO PAGADOR (APENAS NÚMEROS)" />
+                <input type="email" id="pix-email" placeholder="E-MAIL PARA ENVIO DO COMPROVANTE" />
+            </div>
+
+            <button id="btn-gerar-pix" class="btn-cyan w-full py-5 rounded-2xl uppercase tracking-widest text-xs shadow-xl shadow-cyan-500/10 active:scale-95 transition-all">
+                Gerar QR Code PIX
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
+
+        // CONFIG FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
+            authDomain: "agendafacil-1.firebaseapp.com",
+            projectId: "agendafacil-1",
+            storageBucket: "agendafacil-1.firebasestorage.app",
+            messagingSenderId: "862585496599",
+            appId: "1:862585496599:web:2a360f1147a334d1342852"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const functions = getFunctions(app);
+
+        // CONFIG MERCADO PAGO
+        const mp = new MercadoPago('APP_USR-1046a726-690d-4227-8479-d90b5720d6ba');
+
+        // URL PARAMS
+        const params = new URLSearchParams(window.location.search);
+        const valorOriginal = params.get('amount') || "19.90";
+        const plano = params.get('plan') || "Plano Profissional";
+
+        document.getElementById('valor-display').innerText = `R$ ${valorOriginal.replace('.', ',')}`;
+        document.getElementById('plano-nome').innerText = plano;
+
+        // SWITCH TABS (CARTÃO VS PIX)
+        const btnTabCard = document.getElementById('btn-tab-card');
+        const btnTabPix = document.getElementById('btn-tab-pix');
+        const formCartao = document.getElementById('form-checkout');
+        const formPix = document.getElementById('sessao-pix');
+
+        btnTabCard.onclick = () => {
+            btnTabCard.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl tab-active transition-all";
+            btnTabPix.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl tab-inactive transition-all";
+            formCartao.classList.remove('hidden');
+            formPix.classList.add('hidden');
+        };
+
+        btnTabPix.onclick = () => {
+            btnTabPix.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl tab-active transition-all";
+            btnTabCard.className = "flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl tab-inactive transition-all";
+            formPix.classList.remove('hidden');
+            formCartao.classList.add('hidden');
+        };
+
+        // LÓGICA DO CARTÃO
+        const cardForm = mp.cardForm({
+            amount: valorOriginal,
+            iframe: true,
+            form: {
+                id: "form-checkout",
+                cardNumber: { id: "cardNumberId", placeholder: "0000 0000 0000 0000" },
+                expirationDate: { id: "expirationDateId", placeholder: "MM/AA" },
+                securityCode: { id: "securityCodeId", placeholder: "123" },
+                cardholderName: { id: "form-checkout__cardholderName" },
+                issuer: { id: "form-checkout__issuer" },
+                installments: { id: "form-checkout__installments" },
+                identificationType: { id: "form-checkout__identificationType" },
+                identificationNumber: { id: "form-checkout__identificationNumber" },
+                cardholderEmail: { id: "form-checkout__cardholderEmail" },
+            },
+            callbacks: {
+                onSubmit: async event => {
+                    event.preventDefault();
+                    const btn = document.getElementById("form-checkout__submit");
+                    btn.innerText = "PROCESSANDO...";
+                    btn.disabled = true;
+
+                    try {
+                        const formData = cardForm.getCardFormData();
+                        const processar = httpsCallable(functions, 'processarPagamento');
+                        const res = await processar({
+                            amount: valorOriginal,
+                            token: formData.token,
+                            description: plano,
+                            installments: formData.installments,
+                            payment_method_id: formData.payment_method_id,
+                            issuer_id: formData.issuer_id,
+                            email: formData.cardholderEmail,
+                            identificationType: formData.identificationType,
+                            identificationNumber: formData.identificationNumber
+                        });
+
+                        if (res.data.success) window.location.href = `sucesso.html?id=${res.data.id}`;
+                        else alert("Pagamento Recusado!");
+                    } catch (e) { alert("Erro na comunicação."); }
+                    btn.disabled = false;
+                    btn.innerText = "Finalizar Assinatura";
+                }
+            }
+        });
+
+        // LÓGICA DO PIX
+        document.getElementById('btn-gerar-pix').onclick = async () => {
+            const cpf = document.getElementById('pix-cpf').value;
+            const email = document.getElementById('pix-email').value;
+            const btn = document.getElementById('btn-gerar-pix');
+
+            if (!cpf || !email) return alert("Preencha os dados do PIX.");
+
+            btn.innerText = "GERANDO QR CODE...";
+            btn.disabled = true;
+
+            try {
+                const processar = httpsCallable(functions, 'processarPagamento');
+                const res = await processar({
+                    amount: valorOriginal,
+                    payment_method_id: "pix",
+                    description: plano,
+                    email: email,
+                    identificationNumber: cpf,
+                    identificationType: "CPF"
+                });
+
+                if (res.data.success) {
+                    // Aqui você redireciona para sua tela de QR Code
+                    window.location.href = `pix-checkout.html?qr=${res.data.qr_code}&copy=${res.data.copy_paste}`;
+                }
+            } catch (e) { alert("Erro ao gerar PIX."); }
+            btn.disabled = false;
+            btn.innerText = "Gerar QR Code PIX";
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.href = "login.html";
+        });
+    </script>
+</body>
+</html>
