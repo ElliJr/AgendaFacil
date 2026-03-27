@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AgendaFacil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0a0a0a',
+                        card: '#161616',
+                        border: '#262626',
+                        cyan: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: white; overflow: hidden; }
+        .glass-card { background: rgba(22, 22, 22, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        input:focus { border-color: #22d3ee !important; box-shadow: 0 0 15px rgba(34, 211, 238, 0.1); }
+        .gradient-btn { background: linear-gradient(135deg, #22d3ee, #0891b2); }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-6 relative">
+    
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full -z-10"></div>
+
+    <div class="w-full max-w-md glass-card p-10 rounded-[3rem] shadow-2xl">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl font-900 italic tracking-tighter uppercase">
+                Agenda <span class="text-cyan-400">Fácil</span>
+            </h1>
+            <p id="login-subtitle" class="text-[9px] text-neutral-500 font-black uppercase tracking-[0.4em] mt-2">Gestão Profissional</p>
+        </header>
+
+        <div class="space-y-4">
+            <div id="area-cadastro" class="hidden animate-in fade-in duration-500">
+                <label class="text-[10px] text-neutral-500 font-black uppercase tracking-widest ml-4 mb-2 block">Nome do Negócio</label>
+                <input id="reg-nome-barbearia" placeholder="Ex: Barber Shop Elite" 
+                    class="w-full bg-neutral-900 border border-border p-4 rounded-2xl text-sm font-bold outline-none transition-all placeholder:text-neutral-700">
+            </div>
+
+            <div>
+                <label class="text-[10px] text-neutral-500 font-black uppercase tracking-widest ml-4 mb-2 block">E-mail</label>
+                <input id="email" type="email" placeholder="seu@email.com" 
+                    class="w-full bg-neutral-900 border border-border p-4 rounded-2xl text-sm font-bold outline-none transition-all placeholder:text-neutral-700">
+            </div>
+
+            <div>
+                <label class="text-[10px] text-neutral-500 font-black uppercase tracking-widest ml-4 mb-2 block">Senha</label>
+                <input id="senha" type="password" placeholder="••••••••" 
+                    class="w-full bg-neutral-900 border border-border p-4 rounded-2xl text-sm font-bold outline-none transition-all placeholder:text-neutral-700">
+            </div>
+
+            <button id="btn-principal" 
+                class="gradient-btn w-full p-5 rounded-[2rem] text-black font-900 uppercase text-xs tracking-[0.2em] shadow-xl shadow-cyan-500/20 active:scale-95 transition-all mt-4">
+                Acessar Painel
+            </button>
+
+            <div class="flex flex-col gap-4 pt-6 text-center">
+                <button id="btn-alternar" class="text-[10px] font-black text-neutral-500 uppercase tracking-widest hover:text-cyan-400 transition">
+                    Não tem conta? <span class="text-white underline ml-1">Criar agora</span>
+                </button>
+                <a href="esqueciSenha.html" class="text-[9px] font-black text-neutral-600 uppercase tracking-widest hover:text-red-400 transition">
+                    Esqueci minha senha
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
+            authDomain: "agendafacil-1.firebaseapp.com",
+            projectId: "agendafacil-1",
+            storageBucket: "agendafacil-1.firebasestorage.app",
+            messagingSenderId: "862585496599",
+            appId: "1:862585496599:web:2a360f1147a334d1342852"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let modoCadastro = false;
+
+        // Alternar entre Login e Cadastro
+        document.getElementById("btn-alternar").onclick = () => {
+            modoCadastro = !modoCadastro;
+            document.getElementById("area-cadastro").classList.toggle("hidden", !modoCadastro);
+            document.getElementById("btn-principal").innerText = modoCadastro ? "Criar meu Negócio" : "Acessar Painel";
+            document.getElementById("btn-alternar").innerHTML = modoCadastro ? "Já tem conta? <span class='text-white underline ml-1'>Fazer Login</span>" : "Não tem conta? <span class='text-white underline ml-1'>Criar agora</span>";
+            document.getElementById("login-subtitle").innerText = modoCadastro ? "Novo Cadastro" : "Gestão Profissional";
+        };
+
+        // Ação Principal
+        document.getElementById("btn-principal").onclick = async () => {
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+            const nomeBarber = document.getElementById("reg-nome-barbearia").value;
+
+            if (!email || !senha) return alert("Ei, preencha tudo certinho! 👊");
+
+            try {
+                if (modoCadastro) {
+                    if (!nomeBarber) return alert("Como chama o seu negócio? 🚀");
+                    const res = await createUserWithEmailAndPassword(auth, email, senha);
+                    
+                    // Configuração inicial do Perfil (7 dias de teste)
+                    const expira = new Date();
+                    expira.setDate(expira.getDate() + 7);
+
+                    await setDoc(doc(db, "perfis", res.user.uid), {
+                        nomeBarbearia: nomeBarber,
+                        email: email,
+                        statusPagamento: "teste",
+                        expiraEm: expira,
+                        criadoEm: new Date()
+                    });
+                    
+                    alert("Bem-vindo ao time! Redirecionando...");
+                } else {
+                    await signInWithEmailAndPassword(auth, email, senha);
+                }
+            } catch (e) {
+                alert("Opa! " + e.message);
+            }
+        };
+
+        // Monitorar se já está logado
+        onAuthStateChanged(auth, (user) => {
+            if (user) window.location.href = "index.html";
+        });
+    </script>
+</body>
+</html>
