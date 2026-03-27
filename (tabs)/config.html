@@ -134,7 +134,7 @@
                 document.getElementById("link-externo").value = linkFinal;
                 document.getElementById("user-email-display").innerText = user.email;
                 
-                const nomeBarbeiro = user.displayName || user.nomeBarbearia.split('@')[0];
+                const nomeBarbeiro = user.displayName || user.email.split('@')[0];
                 document.getElementById("display-nome-barber").innerText = nomeBarbeiro;
 
                 const iniciais = nomeBarbeiro.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
