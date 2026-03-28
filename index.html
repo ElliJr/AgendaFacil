@@ -174,53 +174,25 @@
         const db = getFirestore(app);
 
         // Exemplo de trava de segurança no Dashboard
+        // Na sua index.html
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log("Usuário logado UID:", user.uid); // Debug: Ver o ID do cabra
+                const docSnap = await getDoc(doc(db, "perfis", user.uid));
 
-                try {
-                    const docRef = doc(db, "perfis", user.uid);
-                    const docSnap = await getDoc(docRef);
-
-                    if (docSnap.exists()) {
-                        const dados = docSnap.data();
-                        console.log("Dados encontrados no Firestore:", dados); // Debug: Ver o que tem no banco
-
-                        // 1. Verifica se o campo expiraEm existe
-                        if (!dados.expiraEm) {
-                            console.error("ERRO: O campo 'expiraEm' não existe para este usuário no Firestore.");
-                            // Se não tem data de expiração, podemos assumir que é novo ou erro de cadastro
-                            return;
-                        }
-
-                        // 2. Verifica se expiraEm é um Timestamp (tem a função toDate)
-                        let dataExpiracao;
-                        if (typeof dados.expiraEm.toDate === 'function') {
-                            dataExpiracao = dados.expiraEm.toDate();
-                        } else {
-                            // Caso você tenha salvo como String ou Number por engano
-                            dataExpiracao = new Date(dados.expiraEm);
-                        }
-
+                if (docSnap.exists()) {
+                    const dados = docSnap.data();
+                    // Verifica se o campo existe ANTES de usar o toDate()
+                    if (dados.expiraEm) {
                         const hoje = new Date();
-                        const status = dados.statusPagamento;
-
-                        if (hoje > dataExpiracao && status !== 'ativo') {
-                            console.log("Acesso bloqueado: Assinatura vencida.");
+                        if (hoje > dados.expiraEm.toDate() && dados.statusPagamento !== 'ativo') {
                             window.location.href = "contratacaoAssinatura.html?status=expirado";
-                        } else {
-                            console.log("Acesso liberado! Tudo certo.");
                         }
-
-                    } else {
-                        console.warn("Documento não existe na coleção 'perfis' para o UID:", user.uid);
-                        // Opcional: window.location.href = "completar-perfil.html";
                     }
-                } catch (error) {
-                    console.error("Erro crítico na verificação:", error);
+                } else {
+                    console.log("Documento ainda não existe, aguardando...");
+                    // Opcional: mostrar um 'loading' ou criar o perfil se for erro de sistema
                 }
             } else {
-                console.log("Nenhum usuário logado. Indo para login...");
                 window.location.href = "login.html";
             }
         });
