@@ -158,7 +158,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc,onSnapshot, query, collection, where, orderBy, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, onSnapshot, query, collection, where, orderBy, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
@@ -176,13 +176,36 @@
         // Exemplo de trava de segurança no Dashboard
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const docSnap = await getDoc(doc(db, "perfis", user.uid));
-                const dados = docSnap.data();
+                try {
+                    const docRef = doc(db, "perfis", user.uid);
+                    const docSnap = await getDoc(docRef);
 
-                // Se o teste grátis venceu e o status não é 'ativo'
-                const hoje = new Date();
-                if (hoje > dados.expiraEm.toDate() && dados.statusPagamento !== 'ativo') {
-                    window.location.href = "contratacaoAssinatura.html?status=expirado";
+                    // 1. VERIFICAÇÃO VITAL: O documento existe?
+                    if (docSnap.exists()) {
+                        const dados = docSnap.data();
+
+                        // 2. Outra verificação: O campo expiraEm existe no documento?
+                        if (dados && dados.expiraEm) {
+                            const hoje = new Date();
+                            const dataExpiracao = dados.expiraEm.toDate(); // Converte Timestamp para Date
+
+                            if (hoje > dataExpiracao && dados.statusPagamento !== 'ativo') {
+                                console.log("Assinatura expirada.");
+                                window.location.href = "contratacaoAssinatura.html?status=expirado";
+                            } else {
+                                console.log("Acesso liberado!");
+                            }
+                        } else {
+                            console.warn("Documento existe, mas falta o campo 'expiraEm'.");
+                            // Opcional: redirecionar para completar o perfil
+                        }
+                    } else {
+                        // Se o documento não existe, o usuário logou mas não tem perfil criado
+                        console.error("Perfil não encontrado no banco de dados.");
+                        // Talvez redirecionar para uma página de "Completar Cadastro"
+                    }
+                } catch (error) {
+                    console.error("Erro ao buscar dados do perfil:", error);
                 }
             } else {
                 window.location.href = "login.html";
