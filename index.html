@@ -23,32 +23,11 @@
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: white;
-        }
-
-        .tab-active {
-            color: #22d3ee;
-        }
-
-        .tab-inactive {
-            color: #525252;
-        }
-
-        .teal-gradient {
-            background: linear-gradient(135deg, #0891b2, #0a0a0a);
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #262626;
-            border-radius: 10px;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: white; }
+        .tab-active { color: #22d3ee; }
+        .tab-inactive { color: #525252; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
     </style>
 </head>
 
@@ -58,40 +37,29 @@
         <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-cyan-400"></div>
     </div>
 
-    <div id="bloqueio-pagamento"
-        class="hidden fixed inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-md">
+    <div id="bloqueio-pagamento" class="hidden fixed inset-0 bg-black/95 z-[500] flex items-center justify-center p-6 backdrop-blur-md">
         <div class="bg-card p-8 rounded-[2.5rem] w-full max-w-sm text-center border border-cyan-500/30 shadow-2xl">
             <div class="text-5xl mb-6">💳</div>
             <h2 class="text-2xl font-black text-white mb-2 italic tracking-tighter">Acesso Suspenso</h2>
-            <p class="text-neutral-500 text-xs mb-8 leading-relaxed uppercase font-bold tracking-widest">Sua assinatura
-                expirou. Ative o plano PRO para continuar.</p>
-            <button onclick="window.location.href='contratacaoAssinatura.html'"
-                class="w-full bg-cyan-500 p-4 rounded-2xl text-black font-black uppercase text-xs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition">Ativar
-                Agora</button>
-            <button onclick="auth.signOut()"
-                class="mt-6 text-[10px] text-neutral-600 underline uppercase font-black">Sair da conta</button>
+            <p class="text-neutral-500 text-xs mb-8 leading-relaxed uppercase font-bold tracking-widest">Sua assinatura expirou. Ative o plano PRO para continuar.</p>
+            <button onclick="window.location.href='contratacaoAssinatura.html'" class="w-full bg-cyan-500 p-4 rounded-2xl text-black font-black uppercase text-xs tracking-widest shadow-lg shadow-cyan-500/20 active:scale-95 transition">Ativar Agora</button>
+            <button onclick="fazerLogout()" class="mt-6 text-[10px] text-neutral-600 underline uppercase font-black">Sair da conta</button>
         </div>
     </div>
 
     <header class="p-6 flex justify-between items-center max-w-5xl mx-auto">
         <h1 class="text-xl font-black italic tracking-tighter">Agenda <span class="text-cyan-400">Fácil</span></h1>
-        <button id="logout" onclick="auth.signOut()"
-            class="text-[10px] font-black uppercase text-red-500/50 hover:text-red-500 transition">Sair</button>
+        <button onclick="fazerLogout()" class="text-[10px] font-black uppercase text-red-500/50 hover:text-red-500 transition">Sair</button>
     </header>
 
     <main id="dashboard" class="hidden px-6 max-w-5xl mx-auto space-y-6">
-
-        <div
-            class="bg-card p-6 rounded-[2.5rem] border border-border flex justify-between items-center relative overflow-hidden">
+        <div class="bg-card p-6 rounded-[2.5rem] border border-border flex justify-between items-center relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 blur-3xl"></div>
             <div>
-                <p id="status-plano-texto" class="text-[10px] font-black uppercase tracking-widest text-cyan-400">Plano
-                    Ativo</p>
-                <p id="data-expira-texto" class="text-xs text-neutral-500 font-bold mt-1 tracking-tight">Válido até:
-                    --/--</p>
+                <p id="status-plano-texto" class="text-[10px] font-black uppercase tracking-widest text-cyan-400">Carregando...</p>
+                <p id="data-expira-texto" class="text-xs text-neutral-500 font-bold mt-1 tracking-tight">Válido até: --/--</p>
             </div>
-            <button id="btn-mudar-agora"
-                class="bg-white/5 border border-white/5 px-4 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-white/10 transition">Gerenciar</button>
+            <button class="bg-white/5 border border-white/5 px-4 py-2 rounded-xl text-[10px] font-black uppercase hover:bg-white/10 transition">Gerenciar</button>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -111,53 +79,32 @@
                 <div class="h-[1px] flex-1 bg-border mx-4"></div>
             </div>
             <div id="agenda" class="space-y-3">
-            </div>
+                </div>
         </section>
     </main>
 
-    <nav
-        class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-card/80 backdrop-blur-xl border border-white/5 p-2 rounded-[2.5rem] flex justify-between items-center shadow-2xl z-50">
-        <a href="https://agendafacil.buzz/index.html"><button
-                class="flex-1 py-3 flex flex-col items-center gap-1 tab-active">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span class="text-[8px] font-black uppercase tracking-tighter">Início</span>
-            </button></a>
-        <a href="https://agendafacil.buzz/(tabs)/clientes.html"><button
-                class="flex-1 py-3 flex flex-col items-center gap-1 tab-inactive hover:text-neutral-200 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span class="text-[8px] font-black uppercase tracking-tighter">Clientes</span>
-            </button></a>
-        <a href="https://agendafacil.buzz/(tabs)/servicos.html"><button
-                class="flex-1 py-3 flex flex-col items-center gap-1 tab-inactive hover:text-neutral-200 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758L5 19m0-14l4.121 4.121" />
-                </svg>
-                <span class="text-[8px] font-black uppercase tracking-tighter">Serviços</span>
-            </button></a>
-        <a href="https://agendafacil.buzz/(tabs)/config.html"><button
-                class="flex-1 py-3 flex flex-col items-center gap-1 tab-inactive hover:text-neutral-200 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                </svg>
-                <span class="text-[8px] font-black uppercase tracking-tighter">Ajustes</span>
-            </button></a>
+    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-card/80 backdrop-blur-xl border border-white/5 p-2 rounded-[2.5rem] flex justify-between items-center shadow-2xl z-50">
+        <a href="index.html" class="flex-1 py-3 flex flex-col items-center gap-1 tab-active">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            <span class="text-[8px] font-black uppercase tracking-tighter">Início</span>
+        </a>
+        <a href="(tabs)/clientes.html" class="flex-1 py-3 flex flex-col items-center gap-1 tab-inactive">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+            <span class="text-[8px] font-black uppercase tracking-tighter">Clientes</span>
+        </a>
+        <a href="(tabs)/servicos.html" class="flex-1 py-3 flex flex-col items-center gap-1 tab-inactive">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758L5 19m0-14l4.121 4.121" /></svg>
+            <span class="text-[8px] font-black uppercase tracking-tighter">Serviços</span>
+        </a>
+        <a href="(tabs)/config.html" class="flex-1 py-3 flex flex-col items-center gap-1 tab-inactive">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+            <span class="text-[8px] font-black uppercase tracking-tighter">Ajustes</span>
+        </a>
     </nav>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, onSnapshot, query, collection, where, orderBy, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -173,23 +120,48 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Exemplo de trava de segurança no Dashboard
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const docSnap = await getDoc(doc(db, "perfis", user.uid));
+        // FUNÇÃO GLOBAL DE LOGOUT
+        window.fazerLogout = () => {
+            signOut(auth).then(() => { window.location.href = "login.html"; });
+        };
 
-                if (docSnap.exists()) {
-                    const dados = docSnap.data();
-                    // Verifica se o campo existe ANTES de usar o toDate()
-                    if (dados.expiraEm) {
-                        const hoje = new Date();
-                        if (hoje > dados.expiraEm.toDate() && dados.statusPagamento !== 'ativo') {
-                            window.location.href = "contratacaoAssinatura.html?status=expirado";
+        // VERIFICAÇÃO DE LOGIN E ASSINATURA
+        onAuthStateChanged(auth, async (user) => {
+            const loader = document.getElementById("loading");
+            const dashboard = document.getElementById("dashboard");
+
+            if (user) {
+                console.log("1. Usuário logado:", user.uid);
+                try {
+                    const docRef = doc(db, "perfis", user.uid);
+                    const docSnap = await getDoc(docRef);
+
+                    if (docSnap.exists()) {
+                        const dados = docSnap.data();
+                        
+                        // Validar data de expiração
+                        if (dados.expiraEm) {
+                            const hoje = new Date();
+                            const expira = dados.expiraEm.toDate();
+                            if (hoje > expira && dados.statusPagamento !== 'ativo') {
+                                window.location.href = "contratacaoAssinatura.html?status=expirado";
+                                return;
+                            }
                         }
+
+                        // TUDO OK: Mostrar Dashboard e carregar dados
+                        if (loader) loader.classList.add("hidden");
+                        if (dashboard) dashboard.classList.remove("hidden");
+                        
+                        monitorarAssinatura(user.uid);
+                        carregarAgenda(user.uid);
+
+                    } else {
+                        console.error("Perfil não encontrado!");
+                        window.location.href = "login.html";
                     }
-                } else {
-                    console.log("Documento ainda não existe, aguardando...");
-                    // Opcional: mostrar um 'loading' ou criar o perfil se for erro de sistema
+                } catch (e) {
+                    console.error("Erro ao carregar:", e);
                 }
             } else {
                 window.location.href = "login.html";
@@ -198,22 +170,15 @@
 
         function monitorarAssinatura(uid) {
             onSnapshot(doc(db, "perfis", uid), (snap) => {
-                document.getElementById("loading").classList.add("hidden");
                 if (snap.exists()) {
                     const data = snap.data();
-                    const agora = new Date();
                     const expiraEm = data.expiraEm ? data.expiraEm.toDate() : null;
+                    
+                    const statusTxt = document.getElementById("status-plano-texto");
+                    const dataTxt = document.getElementById("data-expira-texto");
 
-                    if (expiraEm && agora > expiraEm) {
-                        document.getElementById("bloqueio-pagamento").classList.remove("hidden");
-                        document.getElementById("dashboard").classList.add("hidden");
-                    } else {
-                        document.getElementById("bloqueio-pagamento").classList.add("hidden");
-                        document.getElementById("dashboard").classList.remove("hidden");
-
-                        document.getElementById("status-plano-texto").innerText = data.statusPagamento === "ativo" ? "Plano PRO Ativo" : "Período de Teste";
-                        document.getElementById("data-expira-texto").innerText = `Vence em: ${expiraEm.toLocaleDateString('pt-BR')}`;
-                    }
+                    if (statusTxt) statusTxt.innerText = data.statusPagamento === "ativo" ? "Plano PRO Ativo" : "Período de Teste";
+                    if (dataTxt && expiraEm) dataTxt.innerText = `Vence em: ${expiraEm.toLocaleDateString('pt-BR')}`;
                 }
             });
         }
@@ -225,7 +190,7 @@
                 snap.forEach(d => {
                     const item = d.data();
                     const isPago = item.status === "concluido";
-                    if (isPago) pago += item.preco;
+                    if (isPago) pago += (item.preco || 0);
                     total++;
 
                     html += `
@@ -252,9 +217,8 @@
         };
 
         window.removerAgendamento = async (id) => {
-            if (confirm("Excluir este agendamento?")) await deleteDoc(doc(db, "agendamentos", id));
+            if (confirm("Excluir agendamento?")) await deleteDoc(doc(db, "agendamentos", id));
         };
     </script>
 </body>
-
 </html>
