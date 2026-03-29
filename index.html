@@ -172,14 +172,19 @@
         };
 
         // VERIFICAÇÃO DE LOGIN E ASSINATURA
+        // VERIFICAÇÃO DE LOGIN E ASSINATURA
         onAuthStateChanged(auth, async (user) => {
             const loader = document.getElementById("loading");
             const dashboard = document.getElementById("dashboard");
-            const nomeBarbeiro = user.nomeDisplay || user.email.split('@')[0];
-            document.getElementById("display-nome-barber").innerText = nomeBarbeiro;
+            const displayNome = document.getElementById("display-nome-barber");
 
             if (user) {
                 console.log("1. Usuário logado:", user.uid);
+
+                // Define o nome apenas após confirmar que o user existe
+                const nomeBarbeiro = user.displayName || user.email.split('@')[0];
+                if (displayNome) displayNome.innerText = nomeBarbeiro;
+
                 try {
                     const docRef = doc(db, "perfis", user.uid);
                     const docSnap = await getDoc(docRef);
@@ -205,11 +210,13 @@
                         carregarAgenda(user.uid);
 
                     } else {
-                        console.error("Perfil não encontrado!");
+                        console.error("Perfil não encontrado no Firestore!");
+                        // Se o perfil não existe, talvez precise criar ou deslogar
                         window.location.href = "login.html";
                     }
                 } catch (e) {
-                    console.error("Erro ao carregar:", e);
+                    console.error("Erro ao carregar dados do perfil:", e);
+                    if (loader) loader.classList.add("hidden"); // Tira o loader mesmo se der erro
                 }
             } else {
                 window.location.href = "login.html";
