@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - AgendaFacil</title>
-    <link rel="icon" width="822"  href="assets/img/LogoAgendaFacil.png" type="image/x-icon">
+    <link rel="icon" width="822" href="assets/img/LogoAgendaFacil.png" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script>
@@ -161,13 +161,19 @@
 
         // --- LOGIN COM GOOGLE ---
         document.getElementById("btn-google").onclick = async () => {
+            const btnGoogle = document.getElementById("btn-google");
+            btnGoogle.disabled = true; // Evita cliques duplos que bugam o popup
+
             try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
 
+                console.log("Logado! Verificando perfil no banco...");
+
                 const docRef = doc(db, "perfis", user.uid);
                 const docSnap = await getDoc(docRef);
 
+                // Se o barbeiro for novo, cria o perfil antes de entrar
                 if (!docSnap.exists()) {
                     const expira = new Date();
                     expira.setDate(expira.getDate() + 7);
@@ -178,12 +184,27 @@
                         statusPagamento: "teste",
                         expiraEm: expira,
                         criadoEm: new Date(),
-                        fotoUrl: user.photoURL
+                        fotoUrl: user.photoURL || ""
                     });
+                    console.log("Novo perfil criado com sucesso.");
                 }
+
+                // O SEGREDO: Redireciona APENAS depois que o banco confirmou tudo
+                window.location.href = "index.html";
+
             } catch (error) {
-                console.error(error);
-                alert("Erro ao entrar com Google: " + error.message);
+                console.error("Erro no Google Login:", error.code);
+
+                // Trata o erro de fechamento de popup sem travar a tela
+                if (error.code === 'auth/popup-closed-by-user') {
+                    alert("Você fechou a janela de login antes de terminar. Tente de novo! 👊");
+                } else if (error.code === 'auth/cancelled-query') {
+                    console.log("Requisição cancelada pelo sistema.");
+                } else {
+                    alert("Erro ao entrar: " + error.message);
+                }
+            } finally {
+                btnGoogle.disabled = false;
             }
         };
 
