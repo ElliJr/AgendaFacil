@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assinatura Confirmada - Agenda Fácil</title>
-    <link rel="icon" width="822"  href="assets/img/LogoAgendaFacil.png" type="image/x-icon">
+    <link rel="icon" width="822" href="assets/img/LogoAgendaFacil.png" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -126,7 +126,7 @@
                 </div>
                 <div class="flex justify-between items-center border-t border-white/5 pt-4">
                     <span class="text-gray-500 text-[10px] uppercase font-bold">Valor Pago</span>
-                    <span class="text-white font-bold text-sm" id="amount-paid">R$ 0,00</span>
+                    <span class="text-white font-bold text-sm" id="amount-paid">R$ 19,90</span>
                 </div>
                 <div class="flex justify-between items-center border-t border-white/5 pt-4">
                     <span class="text-gray-500 text-[10px] uppercase font-bold">Expira em</span>
@@ -152,66 +152,69 @@
             <p class="text-[9px] text-gray-600 font-mono uppercase">ID: <span id="transaction-id">------</span></p>
         </div>
     </div>
-    <script type="module">
+   <script type="module">
+        // 1. Importamos apenas o que o navegador consegue usar
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import serviceAccount from "./serviceAccount.json" assert { type: "json" };
 
-        initializeApp({
-            credential: cert(serviceAccount)
-        });
         const firebaseConfig = {
             apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
             authDomain: "agendafacil-1.firebaseapp.com",
             projectId: "agendafacil-1",
             storageBucket: "agendafacil-1.firebasestorage.app",
             messagingSenderId: "862585496599",
-            appId: "1:862585496599:web:2a360f1147a334d1342852",
-            measurementId: "G-BQK2DBX0S6"
+            appId: "1:862585496599:web:2a360f1147a334d1342852"
         };
 
+        // 2. Inicializa o Firebase
         const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
         const auth = getAuth(app);
 
-        // 1. LÓGICA DE EXIBIÇÃO (Captura exata dos dados do checkout)
+        // 3. LÓGICA DE EXIBIÇÃO (Dados da URL)
         const carregarDadosComprovante = () => {
             const urlParams = new URLSearchParams(window.location.search);
 
-            // Captura os valores vindos da URL do checkout
             const plano = urlParams.get('plan') || "Plano Profissional";
-            const valorRaw = urlParams.get('valor') || "0.00"; // Usamos 'valor' que enviamos no checkout
-            const idTransacao = urlParams.get('id') || "MP-TEMP-" + Math.random().toString(36).substring(2, 9).toUpperCase();
+            const valorRaw = urlParams.get('valor') || "19.90"; 
+            const idTransacao = urlParams.get('id') || "MP-" + Math.random().toString(36).substring(2, 9).toUpperCase();
 
-            // Formata o valor para o padrão R$ 00,00
-            const valorFormatado = parseFloat(valorRaw).toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            });
-
-            // Atualiza o HTML com segurança
-            const planEl = document.getElementById('plan-name italic'); // Mantendo seu ID original
+            // Atualiza a tela
+            const planEl = document.getElementById('plan-name italic'); 
             if (planEl) planEl.textContent = plano;
 
-            document.getElementById('amount-paid').textContent = valorFormatado;
+            document.getElementById('amount-paid').textContent = `R$ ${parseFloat(valorRaw).toFixed(2).replace('.', ',')}`;
             document.getElementById('transaction-id').textContent = idTransacao;
 
-            // Calcula Expiração Real (30 dias a partir de hoje)
+            // Data de Expiração (Calculada para exibição no comprovante)
             const dataExpira = new Date();
             dataExpira.setDate(dataExpira.getDate() + 30);
             document.getElementById('next-billing').textContent = dataExpira.toLocaleDateString('pt-BR');
         };
 
-        // 2. INICIALIZAÇÃO
-        document.addEventListener('DOMContentLoaded', carregarDadosComprovante);
-
-        // 3. VERIFICAÇÃO DE SEGURANÇA
+        // 4. VERIFICAÇÃO EM TEMPO REAL (Para mostrar os dados reais do banco)
         onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                console.warn("Acesso sem login detectado.");
-                // Opcional: window.location.href = 'login.html';
+            if (user) {
+                // Fica "ouvindo" o perfil do usuário
+                onSnapshot(doc(db, "perfis", user.uid), (snap) => {
+                    if (snap.exists()) {
+                        const dados = snap.data();
+                        
+                        // Se o Webhook já atualizou o banco, mostramos a data real aqui
+                        if (dados.expiraEm) {
+                            const expiraReal = dados.expiraEm.toDate();
+                            document.getElementById('next-billing').textContent = expiraReal.toLocaleDateString('pt-BR');
+                        }
+                    }
+                });
+            } else {
+                console.warn("Usuário não logado.");
             }
         });
+
+        // Inicia a carga dos dados da URL ao abrir a página
+        carregarDadosComprovante();
     </script>
 </body>
 
