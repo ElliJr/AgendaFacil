@@ -201,7 +201,7 @@
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // Link final aponta para a página externa agendar.html
-                const linkFinal = `https://agendafacil.app/agendar.html?id=${user.uid}`;
+                const linkFinal = `https://agendafacil.buzz/agendar.html?id=${user.uid}`;
                 document.getElementById("link-externo").value = linkFinal;
                 document.getElementById("user-email-display").innerText = user.email;
 
