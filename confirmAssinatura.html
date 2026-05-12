@@ -149,7 +149,7 @@
                 </div>
                 <div class="flex justify-between items-center border-t border-white/5 pt-4">
                     <span class="text-gray-500 text-[10px] uppercase font-bold">Valor Pago</span>
-                    <span class="text-white font-bold text-sm" id="amount-paid">R$ 19,90</span>
+                    <span class="text-white font-bold text-sm" id="amount-paid">R$ 90,90</span>
                 </div>
                 <div class="flex justify-between items-center border-t border-white/5 pt-4">
                     <span class="text-gray-500 text-[10px] uppercase font-bold">Expira em</span>
@@ -200,7 +200,7 @@
             const urlParams = new URLSearchParams(window.location.search);
 
             const plano = urlParams.get('plan') || "Plano Profissional";
-            const valorRaw = urlParams.get('valor') || "19.90"; 
+            const valorRaw = urlParams.get('valor') || "90.90"; 
             const idTransacao = urlParams.get('id') || "MP-" + Math.random().toString(36).substring(2, 9).toUpperCase();
 
             // Atualiza a tela

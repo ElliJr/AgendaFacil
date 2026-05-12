@@ -1,2 +1,4 @@
 node_modules/
 *.local
+index.js
+package-lock.json

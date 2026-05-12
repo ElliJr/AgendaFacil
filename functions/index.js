@@ -52,7 +52,7 @@ export const processarPagamento = onCall({ cors: true }, async (request) => {
 
     const data = request.data;
     const payment = new Payment(client);
-    const valorDoSistema = 19.90;
+    const valorDoSistema = 90.90;
 
     // Validação de segurança do valor
     if (parseFloat(data.amount) !== valorDoSistema) {
