@@ -33,23 +33,24 @@
         <p class="text-gray-500 uppercase tracking-[0.3em] text-xs font-bold">Escolha a sua evolução</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
         
         <div class="card-plan rounded-[2.5rem] p-8 flex flex-col">
             <div class="mb-8">
                 <h2 class="text-xl font-bold text-gray-400">Plano Basic</h2>
                 <div class="flex items-baseline mt-4">
-                    <span class="text-4xl font-bold text-white text-gray-500">R$ 0</span>
-                    <span class="text-gray-600 ml-2">/sempre</span>
-                    <span class="text-gray-600 ml-2">/sempre</span>
+                    <span class="text-4xl font-bold text-white">R$ 0</span>
+                    <span class="text-gray-500 ml-2">/sempre</span>
                 </div>
             </div>
             
             <ul class="space-y-4 mb-10 flex-1 text-sm text-gray-500">
-                <li class="flex items-center">✅ Até 50 agendamentos</li>
-                <li class="flex items-center">✅ Cadastro de Clientes</li>
-                <li class="flex items-center">❌ Link de Agendamento Online</li>
-                <li class="flex items-center">❌ Relatórios Financeiros</li>
+                <li class="flex items-center">✅ Até 50 agendamentos /mês</li>
+                <li class="flex items-center">✅ Cadastro de Clientes básico</li>
+                <li class="flex items-center">✅ Apenas 1 profissional</li>
+                <li class="flex items-center">❌ Sem Link de Agendamento Online</li>
+                <li class="flex items-center">❌ Sem Confirmações Automáticas</li>
+                <li class="flex items-center">❌ Sem Relatórios Financeiros</li>
             </ul>
 
             <a href="https://agendafacil.buzz" target="_blank">
@@ -58,7 +59,8 @@
                 </button>
             </a>
         </div>
-                <div class="card-plan rounded-[2.5rem] p-8 flex flex-col border-cyan-400/30 relative overflow-hidden">
+
+        <div class="card-plan rounded-[2.5rem] p-8 flex flex-col border-cyan-400/30 relative overflow-hidden">
             <div class="absolute top-0 right-0 pro-badge px-6 py-1 text-[10px] font-bold text-black uppercase tracking-widest rounded-bl-2xl">
                 Recomendado
             </div>
@@ -74,10 +76,11 @@
             
             <ul class="space-y-4 mb-10 flex-1 text-sm text-gray-300">
                 <li class="flex items-center text-cyan-400 font-semibold">✨ Agendamentos Ilimitados</li>
-                <li class="flex items-center">✅ Link de Agendamento Online</li>
-                <li class="flex items-center">✅ Painel Financeiro Detalhado</li>
-                <li class="flex items-center">✅ Suporte Prioritário</li>
-                <li class="flex items-center">✅ Gráfico mensal e anual</li>
+                <li class="flex items-center">✅ Link de Agendamento Próprio</li>
+                <li class="flex items-center">✅ Confirmação Automática no Sistema</li>
+                <li class="flex items-center">✅ Cadastro Completo de Serviços</li>
+                <li class="flex items-center">✅ Controle Financeiro Básico</li>
+                <li class="flex items-center text-gray-500">❌ Limite de 1 profissional/agenda</li>
             </ul>
 
             <a href="https://agendafacil.buzz/pagamentos/pix-checkout.html?plan=PRO%20Mensal&amount=30.90" target="_blank">
@@ -87,13 +90,9 @@
             </a>
         </div>
 
-        <div class="card-plan rounded-[2.5rem] p-8 flex flex-col border-cyan-400/30 relative overflow-hidden">
-            <!-- <div class="absolute top-0 right-0 pro-badge px-6 py-1 text-[10px] font-bold text-black uppercase tracking-widest rounded-bl-2xl">
-                Recomendado
-            </div> -->
-
+        <div class="card-plan rounded-[2.5rem] p-8 flex flex-col border-purple-500/20 relative overflow-hidden">
             <div class="mb-8">
-                <h2 class="text-xl font-bold text-cyan-400">Plano PRO</h2>
+                <h2 class="text-xl font-bold text-cyan-400">Plano Premium</h2>
                 <div class="flex items-baseline mt-4">
                     <span class="text-4xl font-bold text-white">R$ 90,90</span>
                     <span class="text-gray-400 ml-2">/mês</span>
@@ -102,14 +101,15 @@
             </div>
             
             <ul class="space-y-4 mb-10 flex-1 text-sm text-gray-300">
-                <li class="flex items-center text-cyan-400 font-semibold">✨ Agendamentos Ilimitados</li>
-                <li class="flex items-center">✅ Link de Agendamento Online</li>
-                <li class="flex items-center">✅ Painel Financeiro Detalhado</li>
-                <li class="flex items-center">✅ Suporte Prioritário</li>
-                <li class="flex items-center">✅ Gráfico mensal e anual</li>
+                <li class="flex items-center text-cyan-400 font-semibold">🚀 Tudo do Plano PRO +</li>
+                <li class="flex items-center">✅ Multi-Profissionais (Até 5 funcionários)</li>
+                <li class="flex items-center">✅ Painel Financeiro Avançado (Gráficos)</li>
+                <li class="flex items-center">✅ Bloqueio de Clientes Faltosos (Blacklist)</li>
+                <li class="flex items-center">✅ Customização Visual (Sua logo e cores)</li>
+                <li class="flex items-center">✅ Suporte Prioritário VIP via WhatsApp</li>
             </ul>
 
-            <a href="https://agendafacil.buzz/pagamentos/pix-checkout.html?plan=PRO%20Mensal&amount=90.90" target="_blank">
+            <a href="https://agendafacil.buzz/pagamentos/pix-checkout.html?plan=Premium%20Mensal&amount=90.90" target="_blank">
                 <button class="btn-cyan w-full py-4 rounded-2xl text-black font-bold uppercase text-[10px] tracking-widest hover:scale-105 transition shadow-lg shadow-cyan-900/40">
                     Assinar Agora
                 </button>
