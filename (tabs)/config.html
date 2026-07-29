@@ -213,171 +213,153 @@
     </nav>
 
     <!-- FIREBASE & LÓGICA DAS IMAGENS -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
-            authDomain: "agendafacil-1.firebaseapp.com",
-            projectId: "agendafacil-1",
-            storageBucket: "agendafacil-1.firebasestorage.app",
-            messagingSenderId: "862585496599",
-            appId: "1:862585496599:web:2a360f1147a334d1342852"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
+        authDomain: "agendafacil-1.firebaseapp.com",
+        projectId: "agendafacil-1",
+        storageBucket: "agendafacil-1.appspot.com", // Alterado para o formato padrão do Storage
+        messagingSenderId: "862585496599",
+        appId: "1:862585496599:web:2a360f1147a334d1342852"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const storage = getStorage(app);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const storage = getStorage(app);
+    const db = getFirestore(app);
 
-        let currentUser = null;
+    let currentUser = null;
 
-        // LOGOUT
-        window.fazerLogout = () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
-            });
-        };
+    window.fazerLogout = () => {
+        signOut(auth).then(() => { window.location.href = "login.html"; });
+    };
 
-        // CARREGAR DADOS DO USUÁRIO
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = user;
 
-                // Informações do perfil
-                const linkFinal = `https://agendafacil.buzz/agendar.html?id=${user.uid}`;
-                document.getElementById("link-externo").value = linkFinal;
-                document.getElementById("user-email-display").innerText = user.email;
+            document.getElementById("link-externo").value = `https://agendafacil.buzz/agendar.html?id=${user.uid}`;
+            document.getElementById("user-email-display").innerText = user.email;
 
-                const nomeBarbeiro = user.displayName || user.email.split('@')[0];
-                document.getElementById("display-nome-barber").innerText = nomeBarbeiro;
+            const nomeBarbeiro = user.displayName || user.email.split('@')[0];
+            document.getElementById("display-nome-barber").innerText = nomeBarbeiro;
 
-                const iniciais = nomeBarbeiro.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                document.getElementById("initials-display").innerText = iniciais || "??";
+            const iniciais = nomeBarbeiro.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            document.getElementById("initials-display").innerText = iniciais || "??";
 
-                // 1. Carregar Foto de Perfil se existir
-                if (user.photoURL) {
-                    const avatarImg = document.getElementById("avatar-img");
-                    avatarImg.src = user.photoURL;
-                    avatarImg.classList.remove("hidden");
-                    document.getElementById("initials-display").classList.add("hidden");
-                }
-
-                // 2. Carregar Foto de Capa do Header (salva no Firestore)
-                try {
-                    const userDocRef = doc(db, "users", user.uid);
-                    const userDoc = await getDoc(userDocRef);
-                    if (userDoc.exists() && userDoc.data().headerURL) {
-                        document.getElementById("header-bg").style.backgroundImage = `url('${userDoc.data().headerURL}')`;
-                    }
-                } catch (e) {
-                    console.error("Erro ao carregar imagem de capa:", e);
-                }
-
-                // Link da Vitrine
-                const usuarioInstagram = dados.username;
-                const linkVitrine = `https://agendafacil.buzz/${usuarioInstagram}`;
-                if (document.getElementById("link-vitrine")) {
-                    document.getElementById("link-vitrine").value = linkVitrine;
-                }
-            } else {
-                window.location.href = "login.html";
-            }
-        });
-
-        // UPLOAD DA FOTO DE PERFIL
-        document.getElementById("avatar-input").addEventListener("change", async (e) => {
-            const file = e.target.files[0];
-            if (!file || !currentUser) return;
-
-            const loader = document.getElementById("avatar-loader");
-            loader.classList.remove("hidden");
-            loader.classList.add("flex");
-
-            try {
-                const storageRef = ref(storage, `users/${currentUser.uid}/avatar.jpg`);
-                await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(storageRef);
-
-                // Atualiza o perfil no Auth
-                await updateProfile(currentUser, { photoURL: downloadURL });
-
-                // Atualiza a tela
+            // 1. Carregar Foto de Perfil
+            if (user.photoURL) {
                 const avatarImg = document.getElementById("avatar-img");
-                avatarImg.src = downloadURL;
+                avatarImg.src = user.photoURL;
                 avatarImg.classList.remove("hidden");
                 document.getElementById("initials-display").classList.add("hidden");
-
-                alert("Foto de perfil atualizada com sucesso!");
-            } catch (err) {
-                console.error("Erro no upload do avatar:", err);
-                alert("Erro ao enviar a imagem de perfil.");
-            } finally {
-                loader.classList.add("hidden");
-                loader.classList.remove("flex");
             }
-        });
 
-        // UPLOAD DA FOTO DE CAPA DO HEADER
-        document.getElementById("header-input").addEventListener("change", async (e) => {
-            const file = e.target.files[0];
-            if (!file || !currentUser) return;
-
-            const headerBg = document.getElementById("header-bg");
-            headerBg.style.opacity = "0.1"; // Efeito visual de carregamento
-
+            // 2. Carregar Capa do Header
             try {
-                const storageRef = ref(storage, `users/${currentUser.uid}/header.jpg`);
-                await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(storageRef);
-
-                // Salva URL no Firestore no documento do usuário
-                const userDocRef = doc(db, "users", currentUser.uid);
-                await setDoc(userDocRef, { headerURL: downloadURL }, { merge: true });
-
-                // Atualiza o background
-                headerBg.style.backgroundImage = `url('${downloadURL}')`;
-                alert("Capa do header atualizada!");
-            } catch (err) {
-                console.error("Erro no upload da capa:", err);
-                alert("Erro ao enviar a imagem de capa.");
-            } finally {
-                headerBg.style.opacity = "0.3";
+                const userDocRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userDocRef);
+                if (userDoc.exists() && userDoc.data().headerURL) {
+                    document.getElementById("header-bg").style.backgroundImage = `url('${userDoc.data().headerURL}')`;
+                }
+            } catch (e) {
+                console.error("Erro ao buscar dados do Firestore:", e);
             }
+        } else {
+            window.location.href = "login.html";
+        }
+    });
+
+    // UPLOAD FOTO DE PERFIL COM DIAGNÓSTICO
+    document.getElementById("avatar-input").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!currentUser) {
+            alert("Erro: Usuário não autenticado.");
+            return;
+        }
+
+        const loader = document.getElementById("avatar-loader");
+        loader.classList.remove("hidden");
+        loader.classList.add("flex");
+
+        try {
+            const storageRef = ref(storage, `users/${currentUser.uid}/avatar.jpg`);
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+
+            await updateProfile(currentUser, { photoURL: downloadURL });
+
+            const avatarImg = document.getElementById("avatar-img");
+            avatarImg.src = downloadURL;
+            avatarImg.classList.remove("hidden");
+            document.getElementById("initials-display").classList.add("hidden");
+
+            alert("Foto de perfil atualizada com sucesso!");
+        } catch (err) {
+            console.error(err);
+            // Mostra o erro exato do Firebase na tela
+            alert(`Erro no upload (${err.code || 'Desconhecido'}): ${err.message}`);
+        } finally {
+            loader.classList.add("hidden");
+            loader.classList.remove("flex");
+        }
+    });
+
+    // UPLOAD CAPA DO HEADER COM DIAGNÓSTICO
+    document.getElementById("header-input").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!currentUser) {
+            alert("Erro: Usuário não autenticado.");
+            return;
+        }
+
+        const headerBg = document.getElementById("header-bg");
+        headerBg.style.opacity = "0.1";
+
+        try {
+            const storageRef = ref(storage, `users/${currentUser.uid}/header.jpg`);
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+
+            const userDocRef = doc(db, "users", currentUser.uid);
+            await setDoc(userDocRef, { headerURL: downloadURL }, { merge: true });
+
+            headerBg.style.backgroundImage = `url('${downloadURL}')`;
+            alert("Capa do header atualizada!");
+        } catch (err) {
+            console.error(err);
+            alert(`Erro no envio da capa (${err.code || 'Desconhecido'}): ${err.message}`);
+        } finally {
+            headerBg.style.opacity = "0.3";
+        }
+    });
+
+    window.copiarLink = () => {
+        const linkInput = document.getElementById("link-externo");
+        navigator.clipboard.writeText(linkInput.value).then(() => alert("Link copiado!"));
+    };
+
+    window.copiarLinkVitrine = () => {
+        const campo = document.getElementById("link-vitrine");
+        navigator.clipboard.writeText(campo.value).then(() => alert("Link da vitrine copiado!"));
+    };
+
+    window.editarVitrine = () => { window.location.href = "editarVitrine.html"; };
+
+    window.ativarNotificacoes = () => {
+        Notification.requestPermission().then((s) => {
+            if (s === "granted") alert("Notificações ativadas!");
+            else alert("Permissão negada.");
         });
-
-        // COPIAR LINK
-        window.copiarLink = () => {
-            const linkInput = document.getElementById("link-externo");
-            navigator.clipboard.writeText(linkInput.value).then(() => {
-                alert("Link copiado!");
-            });
-        };
-
-        // COPIAR VITRINE
-        window.copiarLinkVitrine = () => {
-            const campo = document.getElementById("link-vitrine");
-            navigator.clipboard.writeText(campo.value).then(() => {
-                alert("Link da vitrine copiado!");
-            });
-        };
-
-        // EDITAR VITRINE
-        window.editarVitrine = () => {
-            window.location.href = "editarVitrine.html";
-        };
-
-        // NOTIFICAÇÕES
-        window.ativarNotificacoes = () => {
-            Notification.requestPermission().then((status) => {
-                if (status === "granted") alert("Notificações ativadas!");
-                else alert("Permissão negada.");
-            });
-        };
-    </script>
+    };
+</script>
 </body>
 
 </html>
