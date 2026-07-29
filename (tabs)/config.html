@@ -45,31 +45,52 @@
         .tab-inactive {
             color: #525252;
         }
-
-        .glass-card {
-            background: linear-gradient(145deg, #161616, #0a0a0a);
-            border: 1px solid #262626;
-        }
     </style>
 </head>
 
 <body class="pb-32">
 
     <div id="view-config" class="p-6 md:p-10 max-w-4xl mx-auto">
-        <header class="relative mb-10 p-8 rounded-[2.5rem] overflow-hidden border border-white/5 bg-card shadow-2xl">
-            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full"></div>
+        <!-- HEADER COM CAPA E FOTO DE PERFIL -->
+        <header class="relative mb-10 p-8 rounded-[2.5rem] overflow-hidden border border-white/5 bg-card shadow-2xl group">
+            <!-- Imagem de Fundo (Capa do Header) -->
+            <div id="header-bg" class="absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-300"></div>
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+
+            <!-- Botão para alterar Capa do Header -->
+            <label for="header-input" class="absolute top-4 right-4 z-20 bg-black/60 hover:bg-black/80 backdrop-blur-md p-2.5 rounded-full border border-white/10 cursor-pointer text-cyan-400 hover:text-white transition-all shadow-lg active:scale-95" title="Alterar imagem de capa">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <input type="file" id="header-input" class="hidden" accept="image/*">
+            </label>
 
             <div class="relative z-10 flex flex-col items-center text-center">
+                <!-- Avatar / Foto de Perfil -->
                 <div class="relative mb-4">
                     <div class="absolute -inset-2 bg-cyan-500/20 rounded-full blur-xl animate-pulse"></div>
-                    <div class="relative w-20 h-20 bg-dark rounded-full flex items-center justify-center border border-cyan-500/30 shadow-2xl">
+                    <div class="relative w-20 h-20 bg-dark rounded-full flex items-center justify-center border border-cyan-500/30 shadow-2xl overflow-hidden">
                         <span id="initials-display" class="text-3xl font-black text-cyan-400">--</span>
+                        <img id="avatar-img" class="w-full h-full object-cover hidden" alt="Foto de Perfil">
+                        
+                        <!-- Overlay de Carregamento -->
+                        <div id="avatar-loader" class="absolute inset-0 bg-black/70 hidden items-center justify-center">
+                            <div class="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
                     </div>
+
+                    <!-- Botão de alterar Foto de Perfil -->
+                    <label for="avatar-input" class="absolute bottom-0 right-0 bg-cyan-500 text-black p-1.5 rounded-full cursor-pointer hover:bg-cyan-400 transition-all shadow-lg active:scale-95 border-2 border-dark" title="Alterar foto de perfil">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <input type="file" id="avatar-input" class="hidden" accept="image/*">
+                    </label>
                 </div>
 
-                <h1 id="display-nome-barber" class="text-2xl font-black text-white tracking-tighter italic">
-                    Carregando...</h1>
-                <p id="user-email-display" class="text-[10px] text-neutral-500 font-bold uppercase tracking-[0.2em] mt-1">---</p>
+                <h1 id="display-nome-barber" class="text-2xl font-black text-white tracking-tighter italic drop-shadow-md">Carregando...</h1>
+                <p id="user-email-display" class="text-[10px] text-neutral-400 font-bold uppercase tracking-[0.2em] mt-1 drop-shadow-md">---</p>
             </div>
         </header>
 
@@ -191,14 +212,12 @@
         </a>
     </nav>
 
-    <!-- SCRIPTS -->
+    <!-- FIREBASE & LÓGICA DAS IMAGENS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import {
-            getAuth,
-            onAuthStateChanged,
-            signOut
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
@@ -211,6 +230,10 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const storage = getStorage(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
 
         // LOGOUT
         window.fazerLogout = () => {
@@ -219,37 +242,118 @@
             });
         };
 
-        // USUÁRIO LOGADO
-        onAuthStateChanged(auth, (user) => {
+        // CARREGAR DADOS DO USUÁRIO
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
+                currentUser = user;
+
+                // Informações do perfil
                 const linkFinal = `https://agendafacil.buzz/agendar.html?id=${user.uid}`;
                 document.getElementById("link-externo").value = linkFinal;
                 document.getElementById("user-email-display").innerText = user.email;
 
-                // CORREÇÃO: displayName em vez de nomeDisplay
                 const nomeBarbeiro = user.displayName || user.email.split('@')[0];
                 document.getElementById("display-nome-barber").innerText = nomeBarbeiro;
 
-                // LINK DA VITRINE
-                const usuarioInstagram = "joaobarber"; 
+                const iniciais = nomeBarbeiro.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                document.getElementById("initials-display").innerText = iniciais || "??";
+
+                // 1. Carregar Foto de Perfil se existir
+                if (user.photoURL) {
+                    const avatarImg = document.getElementById("avatar-img");
+                    avatarImg.src = user.photoURL;
+                    avatarImg.classList.remove("hidden");
+                    document.getElementById("initials-display").classList.add("hidden");
+                }
+
+                // 2. Carregar Foto de Capa do Header (salva no Firestore)
+                try {
+                    const userDocRef = doc(db, "users", user.uid);
+                    const userDoc = await getDoc(userDocRef);
+                    if (userDoc.exists() && userDoc.data().headerURL) {
+                        document.getElementById("header-bg").style.backgroundImage = `url('${userDoc.data().headerURL}')`;
+                    }
+                } catch (e) {
+                    console.error("Erro ao carregar imagem de capa:", e);
+                }
+
+                // Link da Vitrine
+                const usuarioInstagram = "joaobarber";
                 const linkVitrine = `https://agendafacil.buzz/${usuarioInstagram}`;
                 if (document.getElementById("link-vitrine")) {
                     document.getElementById("link-vitrine").value = linkVitrine;
                 }
-
-                // INICIAIS
-                const iniciais = nomeBarbeiro.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                document.getElementById("initials-display").innerText = iniciais || "??";
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        // COPIAR AGENDAMENTO
+        // UPLOAD DA FOTO DE PERFIL
+        document.getElementById("avatar-input").addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file || !currentUser) return;
+
+            const loader = document.getElementById("avatar-loader");
+            loader.classList.remove("hidden");
+            loader.classList.add("flex");
+
+            try {
+                const storageRef = ref(storage, `users/${currentUser.uid}/avatar.jpg`);
+                await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(storageRef);
+
+                // Atualiza o perfil no Auth
+                await updateProfile(currentUser, { photoURL: downloadURL });
+
+                // Atualiza a tela
+                const avatarImg = document.getElementById("avatar-img");
+                avatarImg.src = downloadURL;
+                avatarImg.classList.remove("hidden");
+                document.getElementById("initials-display").classList.add("hidden");
+
+                alert("Foto de perfil atualizada com sucesso!");
+            } catch (err) {
+                console.error("Erro no upload do avatar:", err);
+                alert("Erro ao enviar a imagem de perfil.");
+            } finally {
+                loader.classList.add("hidden");
+                loader.classList.remove("flex");
+            }
+        });
+
+        // UPLOAD DA FOTO DE CAPA DO HEADER
+        document.getElementById("header-input").addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file || !currentUser) return;
+
+            const headerBg = document.getElementById("header-bg");
+            headerBg.style.opacity = "0.1"; // Efeito visual de carregamento
+
+            try {
+                const storageRef = ref(storage, `users/${currentUser.uid}/header.jpg`);
+                await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(storageRef);
+
+                // Salva URL no Firestore no documento do usuário
+                const userDocRef = doc(db, "users", currentUser.uid);
+                await setDoc(userDocRef, { headerURL: downloadURL }, { merge: true });
+
+                // Atualiza o background
+                headerBg.style.backgroundImage = `url('${downloadURL}')`;
+                alert("Capa do header atualizada!");
+            } catch (err) {
+                console.error("Erro no upload da capa:", err);
+                alert("Erro ao enviar a imagem de capa.");
+            } finally {
+                headerBg.style.opacity = "0.3";
+            }
+        });
+
+        // COPIAR LINK
         window.copiarLink = () => {
             const linkInput = document.getElementById("link-externo");
             navigator.clipboard.writeText(linkInput.value).then(() => {
-                alert("Link copiado! Coloque na bio do seu Instagram.");
+                alert("Link copiado!");
             });
         };
 
@@ -269,13 +373,11 @@
         // NOTIFICAÇÕES
         window.ativarNotificacoes = () => {
             Notification.requestPermission().then((status) => {
-                if (status === "granted") {
-                    alert("Notificações ativadas!");
-                } else {
-                    alert("Permissão negada.");
-                }
+                if (status === "granted") alert("Notificações ativadas!");
+                else alert("Permissão negada.");
             });
         };
     </script>
 </body>
+
 </html>
