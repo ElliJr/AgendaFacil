@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +20,7 @@
                 }
             }
         }
-    </script>
+        </script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0a0a0a; color: white; overflow: hidden; }
         .glass-card { background: rgba(22, 22, 22, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
@@ -31,10 +30,18 @@
 </head>
 
 <body class="min-h-screen flex items-center justify-center p-6 relative">
-
+    
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full -z-10"></div>
-
+    
     <div class="w-full max-w-md glass-card p-10 rounded-[3rem] shadow-2xl">
+        <!-- Botão de About / Sobre -->
+        <button id="btn-about" class="text-[9px] font-black text-cyan-400 uppercase tracking-widest hover:text-cyan-300 transition flex items-center justify-center gap-1.5 mt-2">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Sobre o Sistema
+        </button>
+
         <header class="text-center mb-10">
             <h1 class="text-3xl font-900 italic tracking-tighter uppercase">
                 Agenda <span class="text-cyan-400">Fácil</span>
@@ -81,16 +88,62 @@
                 <span class="text-[10px] font-black uppercase tracking-widest text-neutral-300">Google Account</span>
             </button>
 
-            <div class="flex flex-col gap-4 pt-6 text-center">
+            <div class="flex flex-col gap-3 pt-6 text-center">
                 <button id="btn-alternar" class="text-[10px] font-black text-neutral-500 uppercase tracking-widest hover:text-cyan-400 transition">
                     Não tem conta? <span class="text-white underline ml-1">Criar agora</span>
                 </button>
                 <a href="esqueciSenha.html" class="text-[9px] font-black text-neutral-600 uppercase tracking-widest hover:text-red-400 transition">
                     Esqueci minha senha
                 </a>
+                
             </div>
         </div>
     </div>
+
+    <!-- Modal de About -->
+    <div id="modal-about" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-6 z-50">
+    <div class="w-full max-w-md glass-card p-8 rounded-[2.5rem] relative text-center border border-neutral-800 shadow-2xl">
+        
+        <!-- Título do Sistema -->
+        <h2 class="text-2xl font-black italic uppercase tracking-tighter">
+            Agenda <span class="text-cyan-400">Fácil</span>
+        </h2>
+        
+        <!-- Versão e Badge -->
+        <span class="inline-block mt-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-[9px] font-bold text-cyan-400 uppercase tracking-widest">
+            Versão 1.0.0
+        </span>
+
+        <!-- Slogan -->
+        <div class="mt-4 p-3 bg-neutral-900/50 border border-neutral-800 rounded-2xl">
+            <p class="text-xs font-semibold text-cyan-300 italic">
+                "Seu tempo organizado, seus clientes agendados."
+            </p>
+        </div>
+
+        <!-- Descrição / Quem Somos -->
+        <p class="text-xs text-neutral-400 mt-4 leading-relaxed">
+            Plataforma SaaS de gestão simplificada e agendamento online para profissionais e negócios independentes.
+        </p>
+        
+        <!-- Destaque para a IA Kronos -->
+        <div class="mt-3 text-[11px] text-neutral-300 bg-cyan-950/30 border border-cyan-800/30 p-2.5 rounded-xl">
+            🤖 Suporte inteligente integrado com a IA <span class="text-cyan-400 font-bold">Kronos</span>.
+        </div>
+
+        <!-- Rodapé / Créditos -->
+        <div class="mt-6 pt-4 border-t border-neutral-800 flex justify-between items-center text-[10px] text-neutral-500 uppercase tracking-widest">
+            <span>Desenvolvido por</span>
+            <span class="text-neutral-300 font-bold">AgendaFácil team</span>
+        </div>
+
+        <!-- Botão Fechar -->
+        <button id="btn-fechar-about" class="w-full mt-6 p-3 bg-neutral-900 border border-neutral-800 rounded-xl text-xs font-bold uppercase tracking-widest text-neutral-300 hover:bg-neutral-800 hover:text-white transition cursor-pointer">
+            Fechar
+        </button>
+        
+    </div>
+</div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -124,13 +177,19 @@
         const inputEmail = document.getElementById("email");
         const inputSenha = document.getElementById("senha");
         const inputNomeBarber = document.getElementById("reg-nome-barbearia");
+        const btnAbout = document.getElementById("btn-about");
+        const btnFecharAbout = document.getElementById("btn-fechar-about");
+        const modalAbout = document.getElementById("modal-about");
+
+        // Eventos do Modal About
+        btnAbout.onclick = () => modalAbout.classList.replace("hidden", "flex");
+        btnFecharAbout.onclick = () => modalAbout.classList.replace("flex", "hidden");
 
         // 4. Lógica de Redirecionamento
         const redirecionarUsuario = (user) => {
             if (ADMIN_UIDS.includes(user.uid)) {
                 window.location.href = "adm/boss.html";
             } else {
-                // Se for cliente, vai para a index do sistema, não para o login novamente
                 window.location.href = "https://agendafacil.buzz/index.html"; 
             }
         };
