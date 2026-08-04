@@ -176,13 +176,22 @@
 
 
     <script src="js/chat.js"></script>
-    <script
-     src="https://udify.app/embed.min.js"
-     id="0ZBChnbNmJ6Mj8xZ"
-     defer>
+       <script>
+        // Inicialização do AOS
+        AOS.init({ duration: 800, once: true });
+
+        // Lógica simples de alternar visibilidade do Chatbot
+        const toggleBtn = document.getElementById('toggleChat');
+        const closeBtn = document.getElementById('closeChat');
+        const chatWin = document.getElementById('chatWindow');
+
+        if (toggleBtn && chatWin) {
+            toggleBtn.addEventListener('click', () => chatWin.classList.toggle('hidden'));
+        }
+        if (closeBtn && chatWin) {
+            closeBtn.addEventListener('click', () => chatWin.classList.add('hidden'));
+        }
     </script>
-    <!-- 1. Biblioteca principal das partículas (necessária) -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <!-- 2. Arquivo de configuração local (ou inicialização inline como fallback) -->
     <script src="js/particles.js"></script>
