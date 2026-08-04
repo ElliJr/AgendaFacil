@@ -45,10 +45,30 @@
             background: #262626;
             border-radius: 10px;
         }
+
+        /* Background de partículas */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Garante que o conteúdo fique acima do fundo de partículas */
+        header, main, nav, #loading, #bloqueio-pagamento {
+            position: relative;
+            z-index: 10;
+        }
     </style>
 </head>
 
 <body class="pb-32">
+
+    <!-- Container das Partículas -->
+    <div id="particles-js"></div>
 
     <div id="loading" class="min-h-screen flex items-center justify-center fixed inset-0 bg-dark z-[300]">
         <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-cyan-400"></div>
@@ -146,7 +166,34 @@
             <span class="text-[8px] font-black uppercase tracking-tighter">Ajustes</span>
         </a>
     </nav>
+
+    <!-- 1. Biblioteca principal das partículas (necessária) -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- 2. Arquivo de configuração local (ou inicialização inline como fallback) -->
     <script src="js/particles.js"></script>
+    <script>
+        // Fallback caso o js/particles.js não tenha a configuração pronta
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 40, density: { enable: true, value_area: 800 } },
+                    color: { value: "#22d3ee" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.3, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#06b6d4", opacity: 0.2, width: 1 },
+                    move: { enable: true, speed: 1.5, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+                },
+                retina_detect: true
+            });
+        }
+    </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -165,13 +212,11 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-
         // FUNÇÃO GLOBAL DE LOGOUT
         window.fazerLogout = () => {
             signOut(auth).then(() => { window.location.href = "login.html"; });
         };
 
-        // VERIFICAÇÃO DE LOGIN E ASSINATURA
         // VERIFICAÇÃO DE LOGIN E ASSINATURA
         onAuthStateChanged(auth, async (user) => {
             const loader = document.getElementById("loading");
@@ -181,7 +226,6 @@
             if (user) {
                 console.log("1. Usuário logado:", user.uid);
 
-                // Define o nome apenas após confirmar que o user existe
                 const nomeBarbeiro = user.displayName || user.email.split('@')[0];
                 if (displayNome) displayNome.innerText = nomeBarbeiro;
 
@@ -192,7 +236,6 @@
                     if (docSnap.exists()) {
                         const dados = docSnap.data();
 
-                        // Validar data de expiração
                         if (dados.expiraEm) {
                             const hoje = new Date();
                             const expira = dados.expiraEm.toDate();
@@ -202,7 +245,6 @@
                             }
                         }
 
-                        // TUDO OK: Mostrar Dashboard e carregar dados
                         if (loader) loader.classList.add("hidden");
                         if (dashboard) dashboard.classList.remove("hidden");
 
@@ -211,12 +253,11 @@
 
                     } else {
                         console.error("Perfil não encontrado no Firestore!");
-                        // Se o perfil não existe, talvez precise criar ou deslogar
                         window.location.href = "login.html";
                     }
                 } catch (e) {
                     console.error("Erro ao carregar dados do perfil:", e);
-                    if (loader) loader.classList.add("hidden"); // Tira o loader mesmo se der erro
+                    if (loader) loader.classList.add("hidden");
                 }
             } else {
                 window.location.href = "login.html";
@@ -268,7 +309,7 @@
 
         window.alternarStatus = async (id, status) => {
             const novoStatus = status === "pendente" ? "concluido" : "pendente";
-            await updateDoc(doc(db, "agendamentos", id), { status: novoStatus });
+            await updateDoc(doc(doc(db, "agendamentos", id)), { status: novoStatus });
         };
 
         window.removerAgendamento = async (id) => {
