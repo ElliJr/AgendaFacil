@@ -45,11 +45,20 @@
         .tab-inactive {
             color: #525252;
         }
+           #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body class="pb-32">
-
+    <div id="particles-js"></div>
     <div id="view-config" class="p-6 md:p-10 max-w-4xl mx-auto">
         <!-- HEADER COM CAPA E FOTO DE PERFIL -->
         <header class="relative mb-10 p-8 rounded-[2.5rem] overflow-hidden border border-white/5 bg-card shadow-2xl group">
@@ -211,7 +220,33 @@
             <span class="text-[8px] font-black uppercase tracking-tighter">Ajustes</span>
         </a>
     </nav>
-
+    
+  <!-- 1. Biblioteca principal das partículas (necessária) -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- 2. Arquivo de configuração local (ou inicialização inline como fallback) -->
+    <script src="js/particles.js"></script>
+    <script>
+        // Fallback caso o js/particles.js não tenha a configuração pronta
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 40, density: { enable: true, value_area: 800 } },
+                    color: { value: "#22d3ee" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.3, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#06b6d4", opacity: 0.2, width: 1 },
+                    move: { enable: true, speed: 1.5, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+                },
+                retina_detect: true
+            });
+        }
+    </script>
     <!-- FIREBASE & LÓGICA DAS IMAGENS -->
    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
