@@ -39,13 +39,22 @@
             flex-direction: column;
             justify-content: center;
         }
+       #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
 
         .card-container:hover .card__content { transform: rotateX(0deg); }
     </style>
 </head>
 
 <body class="overflow-x-hidden">
-
+    <div id="particles-js"></div>
     <nav class="p-8 flex justify-between items-center max-w-7xl mx-auto">
         <h1 class="text-2xl font-900 italic tracking-tighter uppercase">Agenda <span class="text-cyan-400">Fácil</span></h1>
         <div class="hidden md:flex gap-8 text-[10px] font-black uppercase tracking-widest text-neutral-500">
@@ -158,6 +167,31 @@
             <span class="text-cyan-400/50 mt-2 block">Fullstack Developer | Mobile & Web Expert</span>
         </p>
     </footer>
-
+      <!-- 1. Biblioteca principal das partículas (necessária) -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- 2. Arquivo de configuração local (ou inicialização inline como fallback) -->
+    <script src="js/particles.js"></script>
+    <script>
+        // Fallback caso o js/particles.js não tenha a configuração pronta
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 40, density: { enable: true, value_area: 800 } },
+                    color: { value: "#22d3ee" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.3, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#06b6d4", opacity: 0.2, width: 1 },
+                    move: { enable: true, speed: 1.5, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+                },
+                retina_detect: true
+            });
+        }
+    </script>
 </body>
 </html>
