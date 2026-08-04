@@ -1,18 +1,17 @@
- window.difyChatbotConfig = {
-  token: '0ZBChnbNmJ6Mj8xZ',
-  baseUrl: 'https://udify.app',
-  inputs: {
-    // You can define the inputs from the Start node here
-    // key is the variable name
-    // e.g.
-    // name: "NAME"
-  },
-  systemVariables: {
-    // user_id: 'YOU CAN DEFINE USER ID HERE',
-    // conversation_id: 'YOU CAN DEFINE CONVERSATION ID HERE, IT MUST BE A VALID UUID',
-  },
-  userVariables: {
-    // avatar_url: 'YOU CAN DEFINE USER AVATAR URL HERE',
-    // name: 'YOU CAN DEFINE USER NAME HERE',
-  },
- }
+document.addEventListener("DOMContentLoaded", () => {
+    const toggleChat = document.getElementById("toggleChat");
+    const closeChat = document.getElementById("closeChat");
+    const chatWindow = document.getElementById("chatWindow");
+
+    if (toggleChat && closeChat && chatWindow) {
+        // Alterna exibição do chat ao clicar no botão
+        toggleChat.addEventListener("click", () => {
+            chatWindow.classList.toggle("hidden");
+        });
+
+        // Esconde o chat ao clicar no X
+        closeChat.addEventListener("click", () => {
+            chatWindow.classList.add("hidden");
+        });
+    }
+});
