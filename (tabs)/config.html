@@ -271,7 +271,7 @@
     let currentUser = null;
 
     window.fazerLogout = () => {
-        signOut(auth).then(() => { window.location.href = "login.html"; });
+        signOut(auth).then(() => { window.location.href = "/login.html"; });
     };
 
     onAuthStateChanged(auth, async (user) => {
