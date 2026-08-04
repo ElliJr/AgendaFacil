@@ -26,11 +26,21 @@
         .glass-card { background: rgba(22, 22, 22, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
         input:focus { border-color: #22d3ee !important; box-shadow: 0 0 15px rgba(34, 211, 238, 0.1); }
         .gradient-btn { background: linear-gradient(135deg, #22d3ee, #0891b2); }
+          #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 
 <body class="min-h-screen flex items-center justify-center p-6 relative">
-    
+    <div id="particles-js"></div>
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full -z-10"></div>
     
     <div class="w-full max-w-md glass-card p-10 rounded-[3rem] shadow-2xl">
@@ -145,6 +155,27 @@
     </div>
 </div>
     <script src="js/particles.js"></script>
+       <script>
+        // Fallback caso o js/particles.js não tenha a configuração pronta
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 40, density: { enable: true, value_area: 800 } },
+                    color: { value: "#22d3ee" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.3, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#06b6d4", opacity: 0.2, width: 1 },
+                    move: { enable: true, speed: 1.5, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+                },
+                retina_detect: true
+            });
+        }
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
