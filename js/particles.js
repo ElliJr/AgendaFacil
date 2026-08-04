@@ -10,7 +10,7 @@ if (typeof particlesJS !== "undefined") {
             },
 
             color: {
-                value: "#ef4444"
+                value: "#7600e4"
             },
 
             shape: {
