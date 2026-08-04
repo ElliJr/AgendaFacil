@@ -35,11 +35,22 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+           #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 
 <body class="pb-32">
-
+    <div id="particles-js"></div>
     <header class="p-6 md:p-10 max-w-5xl mx-auto">
         <div class="flex items-center justify-between mb-2">
             <button onclick="window.location.href = '/index.html'" class="p-2 bg-card border border-border rounded-xl text-neutral-400 hover:text-white transition">
@@ -108,7 +119,33 @@
             </div>
         </div>
     </div>
-
+    
+  <!-- 1. Biblioteca principal das partículas (necessária) -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <!-- 2. Arquivo de configuração local (ou inicialização inline como fallback) -->
+    <script src="js/particles.js"></script>
+    <script>
+        // Fallback caso o js/particles.js não tenha a configuração pronta
+        if (typeof particlesJS !== 'undefined') {
+            particlesJS("particles-js", {
+                particles: {
+                    number: { value: 40, density: { enable: true, value_area: 800 } },
+                    color: { value: "#22d3ee" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.3, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#06b6d4", opacity: 0.2, width: 1 },
+                    move: { enable: true, speed: 1.5, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: false }, onclick: { enable: false }, resize: true }
+                },
+                retina_detect: true
+            });
+        }
+    </script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
