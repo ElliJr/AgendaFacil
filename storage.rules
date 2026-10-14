@@ -1,0 +1,23 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Função auxiliar
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Fotos de perfil e capas
+    match /users/{userId}/{allPaths=**} {
+      allow read: if true; // público (ou mude para isAuth() se preferir)
+      allow write: if isAuth() && request.auth.uid == userId
+                   && request.resource.size < 5 * 1024 * 1024 // max 5MB
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Bloqueia o resto
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
