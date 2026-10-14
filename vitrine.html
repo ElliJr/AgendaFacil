@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitrine - AgendaFácil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="assets/img/iconeAgendaFacil.png" type="image/x-icon">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0a0a0a',
+                        card: '#161616',
+                        border: '#262626',
+                        cyan: { 400: '#22d3ee', 500: '#06b6d4', 600: '#0891b2' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: white; }
+        .gradient-btn { background: linear-gradient(135deg, #22d3ee, #0891b2); }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Loading -->
+    <div id="loading" class="fixed inset-0 bg-dark flex items-center justify-center z-50">
+        <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-cyan-400"></div>
+    </div>
+
+    <!-- Conteúdo -->
+    <div id="conteudo" class="hidden max-w-lg mx-auto pb-20">
+
+        <!-- Capa -->
+        <div id="capa" class="h-48 md:h-56 bg-gradient-to-br from-cyan-900/40 to-dark relative overflow-hidden">
+            <div id="capa-img" class="absolute inset-0 bg-cover bg-center opacity-40"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-transparent to-transparent"></div>
+        </div>
+
+        <!-- Avatar + Nome -->
+        <div class="px-6 -mt-16 relative z-10 text-center">
+            <div class="w-28 h-28 mx-auto rounded-full border-4 border-dark bg-card overflow-hidden shadow-2xl">
+                <img id="foto-perfil" src="" class="w-full h-full object-cover hidden" alt="Foto">
+                <div id="iniciais" class="w-full h-full flex items-center justify-center text-3xl font-black text-cyan-400 bg-card">--</div>
+            </div>
+
+            <h1 id="nome-barbearia" class="mt-4 text-2xl font-black italic tracking-tighter">Carregando...</h1>
+            <p id="bio" class="mt-2 text-sm text-neutral-400 leading-relaxed max-w-xs mx-auto"></p>
+
+            <!-- Redes Sociais -->
+            <div id="redes" class="flex justify-center gap-4 mt-5">
+                <!-- preenchido via JS -->
+            </div>
+        </div>
+
+        <!-- Botão Agendar -->
+        <div class="px-6 mt-8">
+            <a id="btn-agendar" href="#" 
+               class="gradient-btn block w-full py-4 rounded-2xl text-black font-black uppercase text-xs tracking-widest text-center shadow-lg shadow-cyan-500/20 active:scale-95 transition">
+                Agendar Horário
+            </a>
+        </div>
+
+        <!-- Serviços -->
+        <section class="px-6 mt-10">
+            <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-500 mb-4">Serviços</h2>
+            <div id="lista-servicos" class="space-y-3">
+                <!-- preenchido via JS -->
+            </div>
+        </section>
+
+        <!-- Rodapé -->
+        <footer class="text-center mt-16 px-6">
+            <p class="text-[10px] text-neutral-600 font-bold uppercase tracking-widest">
+                Feito com <span class="text-cyan-400">AgendaFácil</span>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Erro -->
+    <div id="erro" class="hidden fixed inset-0 flex items-center justify-center p-6">
+        <div class="text-center">
+            <div class="text-5xl mb-4">😕</div>
+            <h2 class="text-xl font-black">Vitrine não encontrada</h2>
+            <p class="text-neutral-500 text-sm mt-2">Este link pode estar incorreto ou o profissional ainda não configurou a vitrine.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCppcnfUc5N4xuWq0UUmg6_idNLY8vRQdw",
+            authDomain: "agendafacil-1.firebaseapp.com",
+            projectId: "agendafacil-1",
+            storageBucket: "agendafacil-1.appspot.com",
+            messagingSenderId: "862585496599",
+            appId: "1:862585496599:web:2a360f1147a334d1342852"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const BARBER_ID = urlParams.get("id");
+
+        if (!BARBER_ID) {
+            document.getElementById("loading").classList.add("hidden");
+            document.getElementById("erro").classList.remove("hidden");
+        } else {
+            carregarVitrine(BARBER_ID);
+        }
+
+        async function carregarVitrine(uid) {
+            try {
+                // 1. Perfil
+                const perfilSnap = await getDoc(doc(db, "perfis", uid));
+                if (!perfilSnap.exists()) {
+                    throw new Error("Perfil não encontrado");
+                }
+
+                const perfil = perfilSnap.data();
+
+                // Nome
+                document.getElementById("nome-barbearia").innerText = perfil.nomeBarbearia || "Profissional";
+                document.title = `${perfil.nomeBarbearia || "Vitrine"} - AgendaFácil`;
+
+                // Bio
+                const bioEl = document.getElementById("bio");
+                if (perfil.bio) {
+                    bioEl.innerText = perfil.bio;
+                } else {
+                    bioEl.innerText = "Agende seu horário de forma rápida e fácil.";
+                }
+
+                // Foto de perfil
+                if (perfil.fotoUrl) {
+                    const img = document.getElementById("foto-perfil");
+                    img.src = perfil.fotoUrl;
+                    img.classList.remove("hidden");
+                    document.getElementById("iniciais").classList.add("hidden");
+                } else {
+                    const iniciais = (perfil.nomeBarbearia || "AF").substring(0, 2).toUpperCase();
+                    document.getElementById("iniciais").innerText = iniciais;
+                }
+
+                // Capa
+                if (perfil.capaUrl) {
+                    document.getElementById("capa-img").style.backgroundImage = `url(${perfil.capaUrl})`;
+                }
+
+                // Redes sociais
+                const redesEl = document.getElementById("redes");
+                let redesHtml = "";
+
+                if (perfil.instagram) {
+                    const user = perfil.instagram.replace("@", "").replace("https://instagram.com/", "").replace("https://www.instagram.com/", "");
+                    redesHtml += `
+                        <a href="https://instagram.com/${user}" target="_blank" 
+                           class="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-pink-500/20 hover:border-pink-500/40 transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                            </svg>
+                        </a>`;
+                }
+
+                if (perfil.whatsapp) {
+                    const numero = perfil.whatsapp.replace(/\D/g, "");
+                    redesHtml += `
+                        <a href="https://wa.me/55${numero}" target="_blank" 
+                           class="w-11 h-11 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-green-500/20 hover:border-green-500/40 transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                            </svg>
+                        </a>`;
+                }
+
+                redesEl.innerHTML = redesHtml || "";
+
+                // Botão Agendar
+                document.getElementById("btn-agendar").href = `agendar.html?id=${uid}`;
+
+                // 2. Serviços
+                const q = query(collection(db, "servicos"), where("userId", "==", uid));
+                const servSnap = await getDocs(q);
+
+                const lista = document.getElementById("lista-servicos");
+                if (servSnap.empty) {
+                    lista.innerHTML = `<p class="text-center text-neutral-600 text-sm py-8">Nenhum serviço cadastrado ainda.</p>`;
+                } else {
+                    let html = "";
+                    servSnap.forEach(d => {
+                        const s = d.data();
+                        html += `
+                            <div class="bg-card border border-border rounded-2xl p-4 flex justify-between items-center">
+                                <span class="font-bold text-sm">${s.nome}</span>
+                                <span class="text-cyan-400 font-black text-sm">R$ ${Number(s.preco).toFixed(2)}</span>
+                            </div>`;
+                    });
+                    lista.innerHTML = html;
+                }
+
+                // Mostra conteúdo
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("conteudo").classList.remove("hidden");
+
+            } catch (e) {
+                console.error(e);
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("erro").classList.remove("hidden");
+            }
+        }
+    </script>
+</body>
+</html>
