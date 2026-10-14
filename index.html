@@ -364,13 +364,16 @@
         }
 
         window.alternarStatus = async (id, status) => {
-            const novoStatus = status === "pendente" ? "concluido" : "pendente";
-            await updateDoc(doc(doc(db, "agendamentos", id)), { status: novoStatus });
-        };
+            window.alternarStatus = async (id, status) => {
+    const novoStatus = status === "pendente" ? "concluido" : "pendente";
+    await updateDoc(doc(db, "agendamentos", id), { status: novoStatus });
+};
 
-        window.removerAgendamento = async (id) => {
-            if (confirm("Excluir agendamento?")) await deleteDoc(doc(db, "agendamentos", id));
-        };
+window.removerAgendamento = async (id) => {
+    if (confirm("Excluir agendamento?")) {
+        await deleteDoc(doc(db, "agendamentos", id));
+    }
+};
     </script>
 </body>
 </html>
