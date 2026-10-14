@@ -48,43 +48,81 @@
     <div id="view-config" class="p-6 md:p-10 max-w-4xl mx-auto relative z-10">
 
         <!-- HEADER COM CAPA E FOTO DE PERFIL -->
-        <header class="relative mb-10 p-8 rounded-[2.5rem] overflow-hidden border border-white/5 bg-card shadow-2xl group">
-            <div id="header-bg" class="absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-300"></div>
-            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+<header class="relative mb-10 p-8 rounded-[2.5rem] overflow-hidden border border-white/5 bg-card shadow-2xl group">
+    <!-- Imagem de Fundo (Capa) -->
+    <div id="header-bg" class="absolute inset-0 bg-cover bg-center opacity-40 transition-all duration-500"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent"></div>
+    <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none"></div>
 
-            <!-- Botão alterar Capa -->
-            <label for="header-input" class="absolute top-4 right-4 z-20 bg-black/60 hover:bg-black/80 backdrop-blur-md p-2.5 rounded-full border border-white/10 cursor-pointer text-cyan-400 hover:text-white transition-all shadow-lg active:scale-95" title="Alterar imagem de capa">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <input type="file" id="header-input" class="hidden" accept="image/*">
-            </label>
+    <!-- Botões da Capa (canto superior direito) -->
+    <div class="absolute top-4 right-4 z-20 flex gap-2">
+        <!-- Remover Capa -->
+        <button id="btn-remover-capa" onclick="removerCapa()" 
+                class="hidden bg-black/60 hover:bg-red-500/80 backdrop-blur-md p-2.5 rounded-full border border-white/10 text-white transition-all shadow-lg active:scale-95" 
+                title="Remover capa">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+        </button>
 
-            <div class="relative z-10 flex flex-col items-center text-center">
-                <!-- Avatar -->
-                <div class="relative mb-4">
-                    <div class="absolute -inset-2 bg-cyan-500/20 rounded-full blur-xl animate-pulse"></div>
-                    <div class="relative w-20 h-20 bg-dark rounded-full flex items-center justify-center border border-cyan-500/30 shadow-2xl overflow-hidden">
-                        <span id="initials-display" class="text-3xl font-black text-cyan-400">--</span>
-                        <img id="avatar-img" class="w-full h-full object-cover hidden" alt="Foto de Perfil">
-                        <div id="avatar-loader" class="absolute inset-0 bg-black/70 hidden items-center justify-center">
-                            <div class="w-5 h-5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-                        </div>
-                    </div>
+        <!-- Alterar Capa -->
+        <label for="header-input" 
+               class="bg-black/60 hover:bg-black/80 backdrop-blur-md p-2.5 rounded-full border border-white/10 cursor-pointer text-cyan-400 hover:text-white transition-all shadow-lg active:scale-95" 
+               title="Alterar capa">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <input type="file" id="header-input" class="hidden" accept="image/jpeg,image/png,image/webp">
+        </label>
+    </div>
 
-                    <label for="avatar-input" class="absolute bottom-0 right-0 bg-cyan-500 text-black p-1.5 rounded-full cursor-pointer hover:bg-cyan-400 transition-all shadow-lg active:scale-95 border-2 border-dark" title="Alterar foto de perfil">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <input type="file" id="avatar-input" class="hidden" accept="image/*">
-                    </label>
+    <!-- Loading da Capa -->
+    <div id="capa-loader" class="absolute inset-0 bg-black/50 hidden items-center justify-center z-30">
+        <div class="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center text-center">
+        <!-- Avatar -->
+        <div class="relative mb-4">
+            <div class="absolute -inset-2 bg-cyan-500/20 rounded-full blur-xl"></div>
+            <div class="relative w-24 h-24 bg-dark rounded-full flex items-center justify-center border-2 border-cyan-500/40 shadow-2xl overflow-hidden">
+                <span id="initials-display" class="text-3xl font-black text-cyan-400">--</span>
+                <img id="avatar-img" class="w-full h-full object-cover hidden" alt="Foto de Perfil">
+                
+                <!-- Overlay Loading Avatar -->
+                <div id="avatar-loader" class="absolute inset-0 bg-black/70 hidden items-center justify-center">
+                    <div class="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
                 </div>
-
-                <h1 id="display-nome-barber" class="text-2xl font-black text-white tracking-tighter italic drop-shadow-md">Carregando...</h1>
-                <p id="user-email-display" class="text-[10px] text-neutral-400 font-bold uppercase tracking-[0.2em] mt-1 drop-shadow-md">---</p>
             </div>
-        </header>
+
+            <!-- Botões do Avatar -->
+            <div class="absolute -bottom-1 -right-1 flex gap-1">
+                <!-- Remover Foto -->
+                <button id="btn-remover-foto" onclick="removerFoto()" 
+                        class="hidden w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg active:scale-90 transition" 
+                        title="Remover foto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Alterar Foto -->
+                <label for="avatar-input" 
+                       class="w-7 h-7 bg-cyan-500 text-black rounded-full flex items-center justify-center cursor-pointer hover:bg-cyan-400 transition-all shadow-lg active:scale-90 border-2 border-dark" 
+                       title="Alterar foto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <input type="file" id="avatar-input" class="hidden" accept="image/jpeg,image/png,image/webp">
+                </label>
+            </div>
+        </div>
+
+        <h1 id="display-nome-barber" class="text-2xl font-black text-white tracking-tighter italic drop-shadow-md">Carregando...</h1>
+        <p id="user-email-display" class="text-[10px] text-neutral-400 font-bold uppercase tracking-[0.2em] mt-1 drop-shadow-md">---</p>
+    </div>
+</header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- COLUNA ESQUERDA -->
@@ -391,83 +429,213 @@
                     const iniciais = (data.nomeBarbearia || "AF").substring(0, 2).toUpperCase();
                     document.getElementById("initials-display").innerText = iniciais;
 
-                    // Foto de perfil
-                    if (data.fotoUrl) {
-                        const img = document.getElementById("avatar-img");
-                        img.src = data.fotoUrl;
-                        img.classList.remove("hidden");
-                        document.getElementById("initials-display").classList.add("hidden");
-                    }
+  // ====================== UTILITÁRIOS DE IMAGEM ======================
 
-                    // Capa
-                    if (data.capaUrl) {
-                        document.getElementById("header-bg").style.backgroundImage = `url('${data.capaUrl}')`;
-                    }
+// Comprime e redimensiona a imagem no navegador
+async function comprimirImagem(file, maxWidth = 800, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                let width = img.width;
+                let height = img.height;
+
+                // Redimensiona mantendo proporção
+                if (width > maxWidth) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
                 }
-            } catch (e) {
-                console.error("Erro ao carregar perfil:", e);
-            }
-        });
 
-        // Upload Foto de Perfil
-        document.getElementById("avatar-input").addEventListener("change", async (e) => {
-            const file = e.target.files[0];
-            if (!file || !currentUser) return;
+                canvas.width = width;
+                canvas.height = height;
 
-            const loader = document.getElementById("avatar-loader");
-            loader.classList.remove("hidden");
-            loader.classList.add("flex");
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
 
-            try {
-                const storageRef = ref(storage, `users/${currentUser.uid}/avatar.jpg`);
-                await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(storageRef);
+                canvas.toBlob(
+                    (blob) => {
+                        if (blob) resolve(blob);
+                        else reject(new Error("Falha ao comprimir imagem"));
+                    },
+                    "image/jpeg",
+                    quality
+                );
+            };
+            img.onerror = () => reject(new Error("Erro ao carregar imagem"));
+        };
+        reader.onerror = () => reject(new Error("Erro ao ler arquivo"));
+    });
+}
 
-                await setDoc(doc(db, "perfis", currentUser.uid), {
-                    fotoUrl: downloadURL
-                }, { merge: true });
+// Valida o arquivo
+function validarImagem(file) {
+    const tiposPermitidos = ["image/jpeg", "image/png", "image/webp"];
+    const tamanhoMaximo = 8 * 1024 * 1024; // 8MB
 
-                const avatarImg = document.getElementById("avatar-img");
-                avatarImg.src = downloadURL;
-                avatarImg.classList.remove("hidden");
-                document.getElementById("initials-display").classList.add("hidden");
+    if (!tiposPermitidos.includes(file.type)) {
+        alert("Formato inválido. Use JPG, PNG ou WEBP.");
+        return false;
+    }
+    if (file.size > tamanhoMaximo) {
+        alert("Imagem muito grande. Máximo 8MB.");
+        return false;
+    }
+    return true;
+}
 
-                alert("Foto de perfil atualizada!");
-            } catch (err) {
-                console.error(err);
-                alert("Erro no upload da foto: " + err.message);
-            } finally {
-                loader.classList.add("hidden");
-                loader.classList.remove("flex");
-            }
-        });
+// ====================== FOTO DE PERFIL ======================
 
-        // Upload Capa
-        document.getElementById("header-input").addEventListener("change", async (e) => {
-            const file = e.target.files[0];
-            if (!file || !currentUser) return;
+document.getElementById("avatar-input").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file || !currentUser) return;
+    if (!validarImagem(file)) return;
 
-            const headerBg = document.getElementById("header-bg");
-            headerBg.style.opacity = "0.1";
+    const loader = document.getElementById("avatar-loader");
+    const avatarImg = document.getElementById("avatar-img");
+    const initials = document.getElementById("initials-display");
+    const btnRemover = document.getElementById("btn-remover-foto");
 
-            try {
-                const storageRef = ref(storage, `users/${currentUser.uid}/header.jpg`);
-                await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(storageRef);
+    loader.classList.remove("hidden");
+    loader.classList.add("flex");
 
-                await setDoc(doc(db, "perfis", currentUser.uid), {
-                    capaUrl: downloadURL
-                }, { merge: true });
+    try {
+        // Comprime a imagem (max 500px de largura)
+        const blobComprimido = await comprimirImagem(file, 500, 0.85);
 
-                headerBg.style.backgroundImage = `url('${downloadURL}')`;
-                alert("Capa atualizada!");
-            } catch (err) {
-                console.error(err);
-                alert("Erro no upload da capa: " + err.message);
-            } finally {
-                headerBg.style.opacity = "0.3";
-            }
-        });
+        const storageRef = ref(storage, `users/${currentUser.uid}/avatar.jpg`);
+        await uploadBytes(storageRef, blobComprimido);
+        const downloadURL = await getDownloadURL(storageRef);
+
+        // Salva no Firestore
+        await setDoc(doc(db, "perfis", currentUser.uid), {
+            fotoUrl: downloadURL
+        }, { merge: true });
+
+        // Atualiza UI
+        avatarImg.src = downloadURL;
+        avatarImg.classList.remove("hidden");
+        initials.classList.add("hidden");
+        btnRemover.classList.remove("hidden");
+        btnRemover.classList.add("flex");
+
+        // Feedback sutil
+        mostrarToast("Foto de perfil atualizada!");
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao enviar foto: " + (err.message || "Tente novamente"));
+    } finally {
+        loader.classList.add("hidden");
+        loader.classList.remove("flex");
+        e.target.value = ""; // limpa o input
+    }
+});
+
+// Remover foto de perfil
+window.removerFoto = async () => {
+    if (!currentUser) return;
+    if (!confirm("Remover foto de perfil?")) return;
+
+    try {
+        await setDoc(doc(db, "perfis", currentUser.uid), {
+            fotoUrl: null
+        }, { merge: true });
+
+        document.getElementById("avatar-img").classList.add("hidden");
+        document.getElementById("avatar-img").src = "";
+        document.getElementById("initials-display").classList.remove("hidden");
+        document.getElementById("btn-remover-foto").classList.add("hidden");
+
+        mostrarToast("Foto removida");
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao remover foto");
+    }
+};
+
+// ====================== BANNER / CAPA ======================
+
+document.getElementById("header-input").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file || !currentUser) return;
+    if (!validarImagem(file)) return;
+
+    const loader = document.getElementById("capa-loader");
+    const headerBg = document.getElementById("header-bg");
+    const btnRemoverCapa = document.getElementById("btn-remover-capa");
+
+    loader.classList.remove("hidden");
+    loader.classList.add("flex");
+
+    try {
+        // Comprime a imagem (max 1200px de largura)
+        const blobComprimido = await comprimirImagem(file, 1200, 0.8);
+
+        const storageRef = ref(storage, `users/${currentUser.uid}/header.jpg`);
+        await uploadBytes(storageRef, blobComprimido);
+        const downloadURL = await getDownloadURL(storageRef);
+
+        // Salva no Firestore
+        await setDoc(doc(db, "perfis", currentUser.uid), {
+            capaUrl: downloadURL
+        }, { merge: true });
+
+        // Atualiza UI
+        headerBg.style.backgroundImage = `url('${downloadURL}')`;
+        btnRemoverCapa.classList.remove("hidden");
+
+        mostrarToast("Capa atualizada!");
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao enviar capa: " + (err.message || "Tente novamente"));
+    } finally {
+        loader.classList.add("hidden");
+        loader.classList.remove("flex");
+        e.target.value = "";
+    }
+});
+
+// Remover capa
+window.removerCapa = async () => {
+    if (!currentUser) return;
+    if (!confirm("Remover capa?")) return;
+
+    try {
+        await setDoc(doc(db, "perfis", currentUser.uid), {
+            capaUrl: null
+        }, { merge: true });
+
+        document.getElementById("header-bg").style.backgroundImage = "";
+        document.getElementById("btn-remover-capa").classList.add("hidden");
+
+        mostrarToast("Capa removida");
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao remover capa");
+    }
+};
+
+// ====================== TOAST SIMPLES ======================
+function mostrarToast(mensagem) {
+    // Remove toast anterior se existir
+    const antigo = document.getElementById("toast-msg");
+    if (antigo) antigo.remove();
+
+    const toast = document.createElement("div");
+    toast.id = "toast-msg";
+    toast.className = "fixed bottom-28 left-1/2 -translate-x-1/2 bg-cyan-500 text-black px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl z-[200] animate-pulse";
+    toast.innerText = mensagem;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transition = "opacity 0.4s";
+        setTimeout(() => toast.remove(), 400);
+    }, 2200);
+}
     </script>
 </body>
 </html>
