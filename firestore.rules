@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Função auxiliar: usuário autenticado
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Função auxiliar: dono do documento
+    function isOwner(userId) {
+      return isAuth() && request.auth.uid == userId;
+    }
+
+    // ====================== PERFIS ======================
+    match /perfis/{userId} {
+      // Qualquer usuário autenticado pode ler o próprio perfil
+      allow read: if isOwner(userId);
+      
+      // Criar perfil só no próprio uid
+      allow create: if isOwner(userId);
+      
+      // Atualizar só o próprio perfil (e campos limitados se quiser)
+      allow update: if isOwner(userId);
+      
+      // Ninguém deleta perfil pelo cliente
+      allow delete: if false;
+    }
+
+    // ====================== AGENDAMENTOS ======================
+    match /agendamentos/{agendamentoId} {
+      allow read: if isAuth() && resource.data.userId == request.auth.uid;
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuth() && resource.data.userId == request.auth.uid;
+    }
+
+    // ====================== CLIENTES ======================
+    match /clientes/{clienteId} {
+      allow read: if isAuth() && resource.data.userId == request.auth.uid;
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuth() && resource.data.userId == request.auth.uid;
+    }
+
+    // ====================== SERVIÇOS ======================
+    match /servicos/{servicoId} {
+      allow read: if isAuth() && resource.data.userId == request.auth.uid;
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuth() && resource.data.userId == request.auth.uid;
+    }
+
+    // Bloqueia qualquer outra coleção
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
